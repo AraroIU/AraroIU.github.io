@@ -97,7 +97,7 @@ const langDict = {
         navHome: 'Home',
         navVedana: 'Vedana',
         navMind: 'Mind',
-        footerLink: 'How to play observation game'
+        footerLink: 'How to play the mindfulness game of observing feelings.'
     }
 };
 
