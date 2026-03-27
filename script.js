@@ -82,7 +82,7 @@ const langDict = {
         navHome: 'หน้าแรก',
         navVedana: 'เวทนา',
         navMind: 'จิต',
-        footerLink: 'วิธีการเล่นเกมสังเกตเวทนา'
+        footerLink: 'วิธีการเล่นเกมเจริญสติสังเกตเวทนา'
     },
     'en': {
         flag: '🇬🇧',
