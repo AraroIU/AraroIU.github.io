@@ -91,7 +91,7 @@ const langDict = {
         phyTitle: 'Physical Sensation',
         menTitle: 'Mental Sensation',
         sukh: 'Happy',
-        dukkh: 'Sad',
+        dukkh: 'Suffering',
         neutral: 'Neutral',
         reset: 'Reset',
         navHome: 'Home',
