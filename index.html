@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เวทนานุปัสสนาสติปัฏฐาน - สังเกตเวทนา</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="#" class="nav-item">หน้าแรก</a>
+            <a href="#" class="nav-item active">เวทนา</a>
+            <a href="#" class="nav-item">จิต</a>
+        </div>
+        <div class="header-tools">
+            <button class="lang-switch" id="langSwitchBtn">
+                <img class="flag-img" id="langFlag" src="https://flagcdn.com/w40/th.png" alt="TH">
+                <span class="lang-text" id="langText">ไทย</span>
+                <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="main-title" id="pageTitle">เวทนานุปัสสนาสติปัฏฐาน</h1>
+
+        <!-- Group 1: Physical Sensation -->
+        <section class="sensation-card">
+            <div class="card-outline">
+                <h2 class="section-title text-red" id="phyTitle">เวทนาทางกาย</h2>
+
+                <div class="button-group dual-group phy-group">
+                    <div class="btn-wrapper">
+                        <button class="circle-btn btn-sukh" id="phy-sukh"
+                            onclick="recordSensation('phy', 'sukh', 'phy-sukh')">สุข</button>
+                        <div class="counter-badge" id="count-phy-sukh">0</div>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="circle-btn btn-dukkh" id="phy-dukkh"
+                            onclick="recordSensation('phy', 'dukkh', 'phy-dukkh')">ทุกข์</button>
+                        <div class="counter-badge" id="count-phy-dukkh">0</div>
+                    </div>
+                </div>
+
+                <div class="reset-wrapper">
+                    <button class="reset-btn" onclick="resetGroup('phy')">รีเซ็ต</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Group 2: Mental Sensation -->
+        <section class="sensation-card">
+            <div class="card-outline">
+                <h2 class="section-title text-red" id="menTitle">เวทนาทางใจ</h2>
+
+                <div class="button-group triple-group men-group">
+                    <div class="btn-wrapper">
+                        <button class="circle-btn btn-sukh" id="men-sukh"
+                            onclick="recordSensation('men', 'sukh', 'men-sukh')">สุข</button>
+                        <div class="counter-badge" id="count-men-sukh">0</div>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="circle-btn btn-dukkh" id="men-dukkh"
+                            onclick="recordSensation('men', 'dukkh', 'men-dukkh')">ทุกข์</button>
+                        <div class="counter-badge" id="count-men-dukkh">0</div>
+                    </div>
+                    <div class="btn-wrapper">
+                        <button class="circle-btn btn-neutral" id="men-neutral"
+                            onclick="recordSensation('men', 'neutral', 'men-neutral')">เฉยๆ</button>
+                        <div class="counter-badge" id="count-men-neutral">0</div>
+                    </div>
+                </div>
+
+                <div class="reset-wrapper">
+                    <button class="reset-btn" onclick="resetGroup('men')">รีเซ็ต</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer-link-wrapper">
+            <a href="#" class="footer-link">วิธีการเล่นเกมเจริญสติสังเกตเวทนา</a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
