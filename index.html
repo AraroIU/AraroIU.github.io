@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เวทนานุปัสสนาสติปัฏฐาน - สังเกตเวทนา</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <!-- Glassmorphism App Window -->
+    <div class="app-window">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-brand" onclick="navigateTo('home')" style="cursor: pointer;">
+                <span class="logo-text">ARARO <span class="logo-o">IU</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-item active" onclick="navigateTo('home')" id="navHome">หน้าแรก</a>
+                <a href="#" class="nav-item" onclick="navigateTo('body')" id="navBody">กาย</a>
+                <a href="#" class="nav-item" onclick="navigateTo('vedana')" id="navVedana">เวทนา</a>
+                <a href="#" class="nav-item" onclick="navigateTo('mind')" id="navMind">จิต</a>
+            </div>
+            <div class="header-tools">
+                <button class="nav-search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span id="searchText">ค้นหา</span>
+                </button>
+                <button class="lang-pill" id="langSwitchBtn" title="Switch Language">
+                    <img src="https://flagcdn.com/w40/th.png" id="langFlag" alt="TH Flag" class="lang-flag-img">
+                    <span id="langText">ไทย</span>
+                    <svg class="chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Navigation Row -->
+        <div class="mobile-nav">
+            <a href="#" class="mobile-nav-item active" onclick="navigateTo('home')" id="mNavHome">หน้าแรก</a>
+            <a href="#" class="mobile-nav-item" onclick="navigateTo('body')" id="mNavBody">กาย</a>
+            <a href="#" class="mobile-nav-item" onclick="navigateTo('vedana')" id="mNavVedana">เวทนา</a>
+            <a href="#" class="mobile-nav-item" onclick="navigateTo('mind')" id="mNavMind">จิต</a>
+        </div>
+
+        <!-- Main Content -->
+        <main class="container" id="app-content">
+
+            <!-- ================= HOME VIEW ================= -->
+            <section id="view-home" class="view-section active">
+                <div class="hero-section">
+                    <h1 class="main-title" id="homeTitle">สวัสดี, อราโร</h1>
+                    <p class="hero-subtitle" id="homeSubtitle">เริ่มต้นวันใหม่ด้วยสติและความสงบของคุณ</p>
+                    <button class="start-btn" id="startBtn">เริ่มต้นวันนี้</button>
+                </div>
+
+                <div class="nav-cards-grid">
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('body')">
+                        <h3 class="nav-card-title thai-font" id="cardBodyTitle">กาย</h3>
+                        <div class="card-icon-wrapper" style="margin-bottom: 0;">
+                            <img src="icon_body.png" alt="Body - Kaya" class="feature-icon-img">
+                        </div>
+                    </div>
+
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('vedana')">
+                        <h3 class="nav-card-title thai-font" id="cardVedanaTitle">เวทนา</h3>
+                        <div class="card-icon-wrapper" style="margin-bottom: 0;">
+                            <img src="icon_vedana.png" alt="Vedana - Feeling" class="feature-icon-img">
+                        </div>
+                    </div>
+
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('mind')">
+                        <h3 class="nav-card-title thai-font" id="cardMindTitle">จิต</h3>
+                        <div class="card-icon-wrapper" style="margin-bottom: 0;">
+                            <img src="icon_mind.png" alt="Mind - Citta" class="feature-icon-img">
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================= BODY VIEW ================= -->
+            <section id="view-body" class="view-section" style="display: none;">
+                <h1 class="main-title" id="pageTitleBody">กายานุปัสสนาสติปัฏฐาน</h1>
+                <section class="sensation-card">
+                    <div class="card-outline" style="min-height: 200px; justify-content: center;">
+                        <h2 class="section-title text-red">(อยู่ระหว่างการพัฒนา)</h2>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ================= VEDANA VIEW ================= -->
+            <section id="view-vedana" class="view-section" style="display: none;">
+                <h1 class="main-title" id="pageTitle">เวทนานุปัสสนาสติปัฏฐาน</h1>
+
+                <!-- Group 1: Physical Sensation -->
+                <section class="sensation-card">
+                    <div class="card-outline">
+                        <h2 class="section-title text-red" id="phyTitle">เวทนาทางกาย</h2>
+
+                        <div class="button-group dual-group phy-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-sukh" id="phy-sukh"
+                                    onclick="recordSensation('phy', 'sukh', 'phy-sukh')">สุข</button>
+                                <div class="counter-badge" id="count-phy-sukh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-dukkh" id="phy-dukkh"
+                                    onclick="recordSensation('phy', 'dukkh', 'phy-dukkh')">ทุกข์</button>
+                                <div class="counter-badge" id="count-phy-dukkh">0</div>
+                            </div>
+                        </div>
+
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetGroup('phy')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Group 2: Mental Sensation -->
+                <section class="sensation-card">
+                    <div class="card-outline">
+                        <h2 class="section-title text-red" id="menTitle">เวทนาทางใจ</h2>
+
+                        <div class="button-group triple-group men-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-sukh" id="men-sukh"
+                                    onclick="recordSensation('men', 'sukh', 'men-sukh')">สุข</button>
+                                <div class="counter-badge" id="count-men-sukh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-dukkh" id="men-dukkh"
+                                    onclick="recordSensation('men', 'dukkh', 'men-dukkh')">ทุกข์</button>
+                                <div class="counter-badge" id="count-men-dukkh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-neutral" id="men-neutral"
+                                    onclick="recordSensation('men', 'neutral', 'men-neutral')">เฉยๆ</button>
+                                <div class="counter-badge" id="count-men-neutral">0</div>
+                            </div>
+                        </div>
+
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetGroup('men')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="footer-link-wrapper">
+                    <a href="#" class="footer-link">วิธีการเล่นเกมเจริญสติสังเกตเวทนา</a>
+                </div>
+            </section>
+
+            <!-- ================= MIND VIEW ================= -->
+            <section id="view-mind" class="view-section" style="display: none;">
+                <h1 class="main-title" id="pageTitleMind">จิตตานุปัสสนาสติปัฏฐาน</h1>
+                <section class="sensation-card">
+                    <div class="card-outline" style="min-height: 200px; justify-content: center;">
+                        <h2 class="section-title text-red">(อยู่ระหว่างการพัฒนา)</h2>
+                    </div>
+                </section>
+            </section>
+        </main>
+
+        <!-- App Window Footer -->
+        <footer class="app-footer">
+            <div class="footer-text">Araro Meditation © 2024 | Contact Us | Privacy Policy</div>
+            <div class="footer-icons">
+                <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg></a>
+                <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg></a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
