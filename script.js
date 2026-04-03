@@ -148,6 +148,7 @@ const langDict = {
         // Home Navigation Cards
         homeTitle: 'สวัสดี, อราโร',
         homeSubtitle: 'เริ่มต้นวันใหม่ด้วยสติ',
+        homeFooterNoteHtml: '<p>สามารถนำลิงค์ไปวางบนกูเกิ้ล และใช้แอปพลิเคชันบนกูเกิ้ล<br>และ แอพกำลังพัฒนา ควรกดรีเซ็ตแอพใหม่ทุกวัน เพื่อได้รับการอัพเดต</p>',
         contactTitle: 'ติดต่อเรา',
 
         // View Titles
@@ -192,6 +193,7 @@ const langDict = {
         // Home Navigation Cards
         homeTitle: 'Hello, Araro',
         homeSubtitle: 'Start your day with mindfulness',
+        homeFooterNoteHtml: '<p>You can launch the application from the web browser.<br>The app is under development, please refresh or reset daily to receive updates.</p>',
         contactTitle: 'Contact Us',
 
         // View Titles
