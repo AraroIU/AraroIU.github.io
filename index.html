@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมเจริญสติ</title>
+    <meta name="description"
+        content="เว็บไซต์สำหรับฝึกสติ แอพฝึกสติ เกมเจริญสติ สติปัฏฐาน4 Meditation Games Araro IU Meditation">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <!-- Glassmorphism App Window -->
+    <div class="app-window">
+        <!-- Navigation Header (Glassmorphism) -->
+        <header class="glass-header">
+            <!-- Row 1: Brand + Language -->
+            <div class="header-row-1">
+                <div class="nav-brand" onclick="navigateTo('home')" style="cursor: pointer;">
+                    <span class="logo-text">ARARO <span class="logo-o">IU</span></span>
+                </div>
+                <div class="header-tools">
+                    <button class="lang-pill" id="langSwitchBtn" title="Switch Language" aria-label="เปลี่ยนภาษา">
+                        <img src="https://flagcdn.com/w40/th.png" id="langFlag" alt="TH Flag" class="lang-flag-img">
+                        <span id="langText">ไทย</span>
+                        <svg class="chevron-down" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Row 2: Navigation Links (centered) -->
+            <div class="header-row-2">
+                <a href="#" class="nav-item active" onclick="navigateTo('home')" id="navHome">หน้าแรก</a>
+                <a href="#" class="nav-item" onclick="navigateTo('body')" id="navBody">กาย</a>
+                <a href="#" class="nav-item" onclick="navigateTo('vedana')" id="navVedana">เวทนา</a>
+                <a href="#" class="nav-item" onclick="navigateTo('mind')" id="navMind">จิต</a>
+                <a href="#" class="nav-item" onclick="navigateTo('dhamma')" id="navDhamma">ธรรม</a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container" id="app-content">
+
+            <!-- ================= HOME VIEW ================= -->
+            <section id="view-home" class="view-section active">
+                <div class="hero-section">
+                    <p class="hero-subtitle" id="homeSubtitle">เริ่มต้นวันใหม่ด้วยสติ</p>
+                    <button class="start-btn" id="startBtn" onclick="startMindfulness()">กดเริ่มต้นวันนี้</button>
+                </div>
+
+                <div class="nav-cards-grid">
+                    <!-- BODY CARD -->
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('body')">
+                        <h3 class="nav-card-title thai-font" id="cardBodyTitle">กาย</h3>
+                        <div class="card-icon-wrapper">
+                            <div class="feature-icon-emoji icon-body">🍃</div>
+                        </div>
+                    </div>
+
+                    <!-- VEDANA CARD -->
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('vedana')">
+                        <h3 class="nav-card-title thai-font" id="cardVedanaTitle">เวทนา</h3>
+                        <div class="card-icon-wrapper">
+                            <div class="feature-icon-emoji icon-vedana">✨</div>
+                        </div>
+                    </div>
+
+                    <!-- MIND CARD -->
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('mind')">
+                        <h3 class="nav-card-title thai-font" id="cardMindTitle">จิต</h3>
+                        <div class="card-icon-wrapper">
+                            <div class="feature-icon-emoji icon-mind">🌀</div>
+                        </div>
+                    </div>
+
+                    <!-- DHAMMA CARD -->
+                    <div class="nav-card glass-feature-card" onclick="navigateTo('dhamma')">
+                        <h3 class="nav-card-title thai-font" id="cardDhammaTitle">ธรรม</h3>
+                        <div class="card-icon-wrapper">
+                            <div class="feature-icon-emoji icon-dhamma">🪷</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-intro-note glass-feature-card">
+                    <p id="homeIntroText1">การเจริญสติ ด้วย กาย หรือ เวทนา หรือ จิต หรือ ธรรม
+                        ไม่จำเป็นจะต้องเจริญทุกอย่าง</p>
+                    <p id="homeIntroText2">การเจริญสติ จะสังเกตการเจริญสติตามจริตนิสัย
+                        ลองใช้เกมนี้เป็นเครื่องทดสอบของสติว่า ถูกจริตนิสัยกับกรรมฐานกองไหน กาย หรือ เวทนา หรือ จิต
+                        หรือ ธรรม</p>
+                </div>
+
+                <div class="home-footer-note" id="homeFooterNote">
+                    <p>(แอพกำลังพัฒนา ควรกดรีเซ็ตแอพใหม่ทุกวัน เพื่อได้รับการอัพเดต)</p>
+                </div>
+            </section>
+
+            <!-- ================= FLOATING MINDFULNESS TIMER ================= -->
+            <div class="mindfulness-timer" id="mindfulnessTimer" style="display: none;">
+                <div class="timer-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                <div class="timer-pulse"></div>
+            </div>
+
+
+            <section id="view-body" class="view-section" style="display: none;">
+                <div class="page-hero-icon body-hero">
+                    <div class="page-hero-emoji hero-icon-body">🍃</div>
+                </div>
+                <h1 class="main-title" id="pageTitleBody">กายานุปัสสนาสติปัฏฐาน</h1>
+
+                <!-- Section Title: อิริยาบท 4 -->
+                <h2 class="body-section-heading" id="bodyPostureTitle">อิริยาบท 4</h2>
+
+                <!-- Posture 1: เดิน (Walking) -->
+                <section class="sensation-card body-posture-card">
+                    <div class="card-outline">
+                        <div class="button-group single-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn body-btn btn-walk" id="body-walk"
+                                    onclick="recordBodyPosture('walk', 'body-walk')">เดิน</button>
+                                <div class="counter-badge body-counter" id="count-body-walk">0</div>
+                            </div>
+                        </div>
+                        <p class="body-posture-text" id="bodyWalkText">เมื่อร่างกายเดินอยู่ ก็รู้ชัดว่าร่างกายเดินอยู่
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Posture 2: ยืน (Standing) -->
+                <section class="sensation-card body-posture-card">
+                    <div class="card-outline">
+                        <div class="button-group single-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn body-btn btn-stand" id="body-stand"
+                                    onclick="recordBodyPosture('stand', 'body-stand')">ยืน</button>
+                                <div class="counter-badge body-counter" id="count-body-stand">0</div>
+                            </div>
+                        </div>
+                        <p class="body-posture-text" id="bodyStandText">เมื่อร่างกายยืนอยู่ ก็รู้ชัดว่าร่างกายยืนอยู่
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Posture 3: นั่ง (Sitting) -->
+                <section class="sensation-card body-posture-card">
+                    <div class="card-outline">
+                        <div class="button-group single-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn body-btn btn-sit" id="body-sit"
+                                    onclick="recordBodyPosture('sit', 'body-sit')">นั่ง</button>
+                                <div class="counter-badge body-counter" id="count-body-sit">0</div>
+                            </div>
+                        </div>
+                        <p class="body-posture-text" id="bodySitText">เมื่อร่างกายนั่งอยู่ ก็รู้ชัดว่าร่างกายนั่งอยู่
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Posture 4: นอน (Lying Down) -->
+                <section class="sensation-card body-posture-card">
+                    <div class="card-outline">
+                        <div class="button-group single-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn body-btn btn-lie" id="body-lie"
+                                    onclick="recordBodyPosture('lie', 'body-lie')">นอน</button>
+                                <div class="counter-badge body-counter" id="count-body-lie">0</div>
+                            </div>
+                        </div>
+                        <p class="body-posture-text" id="bodyLieText">เมื่อร่างกายนอนอยู่ ก็รู้ชัดว่าร่างกายนอนอยู่</p>
+                    </div>
+                </section>
+
+                <!-- Footer Wisdom Text -->
+                <div class="body-footer-wisdom">
+                    <p id="bodyFooterWisdom">หรือตั้งกายไว้ด้วยอาการอย่างใดๆ ก็รู้ชัดอาการอย่างนั้น</p>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="reset-wrapper" style="margin-bottom: 30px;">
+                    <button class="reset-btn" onclick="resetBodyPostures()" id="bodyResetBtn">รีเซ็ต</button>
+                </div>
+
+                <div class="footer-link-wrapper">
+                    <a href="#" class="footer-link" id="bodyGuideLink"
+                        onclick="navigateTo('body-guide')">วิธีการเจริญสติสังเกตกาย</a>
+                </div>
+            </section>
+
+            <!-- ================= BODY GUIDE VIEW ================= -->
+            <section id="view-body-guide" class="view-section" style="display: none;">
+                <div class="guide-page">
+                    <!-- Back Button -->
+                    <div class="guide-back-wrapper">
+                        <button class="guide-back-btn" onclick="navigateTo('body')" aria-label="กลับไปหน้าหมวดกาย">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 12H5"></path>
+                                <path d="M12 19l-7-7 7-7"></path>
+                            </svg>
+                            <span id="bodyGuideBackText">กลับ</span>
+                        </button>
+                    </div>
+
+                    <!-- Page Title with Decorative Elements -->
+                    <div class="guide-hero">
+                        <div class="guide-hero-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#bodyGuideGrad)"
+                                stroke-width="1.2">
+                                <defs>
+                                    <linearGradient id="bodyGuideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#7c5ce0" />
+                                        <stop offset="50%" stop-color="#a78bfa" />
+                                        <stop offset="100%" stop-color="#818cf8" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20" stroke-dasharray="3 3"></path>
+                                <circle cx="12" cy="12" r="4" fill="rgba(167, 139, 250, 0.2)"></circle>
+                                <circle cx="12" cy="12" r="1.5" fill="rgba(124, 92, 224, 0.5)"></circle>
+                            </svg>
+                        </div>
+                        <h1 class="guide-main-title" id="bodyGuideMainTitle">กายานุปัสสนาสติปัฏฐาน</h1>
+                        <p class="guide-main-subtitle" id="bodyGuideMainSubtitle">วิธีการเจริญสติสังเกตกาย</p>
+                    </div>
+
+                    <!-- Section: Overview -->
+                    <div class="guide-card guide-card-intro">
+                        <div class="guide-card-inner">
+                            <div class="guide-section-badge">
+                                <span class="badge-dot"></span>
+                                <span id="bodyGuideOverviewBadge">ภาพรวม</span>
+                            </div>
+                            <p class="guide-text" id="bodyGuideOverviewText">วิธีการเจริญสติสังเกตในหมวดกายนี้
+                                สามารถมีสติระลึกรู้กายได้หลายอย่าง หลายกรรมฐาน ในเบื้องต้นจะขอยกตัวอย่าง
+                                การเจริญสติด้วยกายในหมวด อริยาบท 4 คือ</p>
+                        </div>
+                    </div>
+
+                    <!-- Section: เดิน (Walking) -->
+                    <div class="guide-card guide-card-body">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-body" id="bodyGuideWalkTitle">
+                                <span class="guide-icon-circle guide-icon-body">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="5" r="2"></circle>
+                                        <path d="M10 22V18L7 15V11L10 9L14 9L17 11V15L14 18V22"></path>
+                                    </svg>
+                                </span>
+                                เดิน
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">🚶</div>
+                                <p class="guide-text" id="bodyGuideWalkDesc">เมื่อร่างกาย เดิน ก็มีสติรู้ชัด
+                                    เห็นร่างกายเดิน (เห็นร่างกาย เหมือนเห็นคนอื่น)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: ยืน (Standing) -->
+                    <div class="guide-card guide-card-body">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-body" id="bodyGuideStandTitle">
+                                <span class="guide-icon-circle guide-icon-body">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="5" r="2"></circle>
+                                        <line x1="12" y1="7" x2="12" y2="17"></line>
+                                        <line x1="12" y1="17" x2="9" y2="22"></line>
+                                        <line x1="12" y1="17" x2="15" y2="22"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </span>
+                                ยืน
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">🧍</div>
+                                <p class="guide-text" id="bodyGuideStandDesc">เมื่อร่างกาย ยืน ก็มีสติรู้ชัด
+                                    เห็นร่างกายยืน (เห็นร่างกาย เหมือนเห็นคนอื่น)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: นั่ง (Sitting) -->
+                    <div class="guide-card guide-card-body">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-body" id="bodyGuideSitTitle">
+                                <span class="guide-icon-circle guide-icon-body">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="5" r="2"></circle>
+                                        <path d="M12 7v5h5"></path>
+                                        <line x1="12" y1="12" x2="9" y2="22"></line>
+                                        <line x1="17" y1="12" x2="17" y2="22"></line>
+                                    </svg>
+                                </span>
+                                นั่ง
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">🧘</div>
+                                <p class="guide-text" id="bodyGuideSitDesc">เมื่อร่างกาย นั่ง ก็มีสติรู้ชัด
+                                    เห็นร่างกายนั่ง (เห็นร่างกาย เหมือนเห็นคนอื่น)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: นอน (Lying Down) -->
+                    <div class="guide-card guide-card-body">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-body" id="bodyGuideLieTitle">
+                                <span class="guide-icon-circle guide-icon-body">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="6" cy="12" r="2"></circle>
+                                        <line x1="8" y1="12" x2="22" y2="12"></line>
+                                        <line x1="2" y1="17" x2="22" y2="17"></line>
+                                    </svg>
+                                </span>
+                                นอน
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">🛌</div>
+                                <p class="guide-text" id="bodyGuideLieDesc">เมื่อร่างกาย นอน ก็มีสติรู้ชัด
+                                    เห็นร่างกายนอน (เห็นร่างกาย เหมือนเห็นคนอื่น)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: อาการอื่นๆ (Other Postures) -->
+                    <div class="guide-card guide-card-practice">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-practice" id="bodyGuideOtherTitle">
+                                <span class="guide-icon-circle guide-icon-practice">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5"></path>
+                                        <path d="M2 12l10 5 10-5"></path>
+                                    </svg>
+                                </span>
+                                อาการอื่นๆ
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-mind">
+                                <div class="highlight-icon">✨</div>
+                                <p class="guide-text" id="bodyGuideOtherDesc">หรือตั้งกายไว้ด้วยอาการอย่างใดๆ
+                                    ก็รู้ชัดอาการอย่างนั้น (เห็นร่างกาย เหมือนเห็นคนอื่น)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Final Insight -->
+                    <div class="guide-card guide-card-liberation">
+                        <div class="guide-card-inner guide-final-card">
+                            <p class="guide-text guide-text-golden" id="bodyGuideFinalText">เกมส์เจริญสตินี้
+                                ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น
+                                เพราะขณะที่กดปุ่ม มีการนับจำนวนอริยาบทกายแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ
+                                เท่ากับจำนวนที่กดปุ่มลงไปนั้น</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom spacer -->
+                    <div style="height: 40px;"></div>
+                </div>
+            </section>
+
+            <!-- ================= VEDANA VIEW ================= -->
+            <section id="view-vedana" class="view-section" style="display: none;">
+                <div class="page-hero-icon vedana-hero">
+                    <div class="page-hero-emoji hero-icon-vedana">✨</div>
+                </div>
+                <h1 class="main-title" id="pageTitle">เวทนานุปัสสนาสติปัฏฐาน</h1>
+
+                <!-- Group 1: Physical Sensation -->
+                <section class="sensation-card">
+                    <div class="card-outline">
+                        <h2 class="section-title text-red" id="phyTitle">เวทนาทางกาย</h2>
+
+                        <div class="button-group dual-group phy-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-sukh" id="phy-sukh"
+                                    onclick="recordSensation('phy', 'sukh', 'phy-sukh')">สุข</button>
+                                <div class="counter-badge" id="count-phy-sukh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-dukkh" id="phy-dukkh"
+                                    onclick="recordSensation('phy', 'dukkh', 'phy-dukkh')">ทุกข์</button>
+                                <div class="counter-badge" id="count-phy-dukkh">0</div>
+                            </div>
+                        </div>
+
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetGroup('phy')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Group 2: Mental Sensation -->
+                <section class="sensation-card">
+                    <div class="card-outline">
+                        <h2 class="section-title text-red" id="menTitle">เวทนาทางใจ</h2>
+
+                        <div class="button-group triple-group men-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-sukh" id="men-sukh"
+                                    onclick="recordSensation('men', 'sukh', 'men-sukh')">สุข</button>
+                                <div class="counter-badge" id="count-men-sukh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-dukkh" id="men-dukkh"
+                                    onclick="recordSensation('men', 'dukkh', 'men-dukkh')">ทุกข์</button>
+                                <div class="counter-badge" id="count-men-dukkh">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn btn-neutral" id="men-neutral"
+                                    onclick="recordSensation('men', 'neutral', 'men-neutral')">เฉยๆ</button>
+                                <div class="counter-badge" id="count-men-neutral">0</div>
+                            </div>
+                        </div>
+
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetGroup('men')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="footer-link-wrapper">
+                    <a href="#" class="footer-link" onclick="navigateTo('guide')">วิธีการเล่นเกมเจริญสติสังเกตเวทนา</a>
+                </div>
+            </section>
+
+            <!-- ================= MIND VIEW ================= -->
+            <section id="view-mind" class="view-section" style="display: none;">
+                <div class="page-hero-icon mind-hero">
+                    <div class="page-hero-emoji hero-icon-mind">🌀</div>
+                </div>
+                <h1 class="main-title" id="pageTitleMind">จิตตานุปัสสนาสติปัฏฐาน</h1>
+
+                <!-- Text Input Area 1 & 2 -->
+                <section class="sensation-card mind-card">
+                    <div class="card-outline">
+                        <h2 class="section-title mind-section-title" id="mindNoteTitle">บันทึกสภาวะจิต</h2>
+
+                        <div class="mind-input-group">
+                            <div class="mind-input-btn" id="mindInputBtn1"
+                                onclick="recordMindInput('mindInput1', 'mindInputBtn1')" ontouchstart="">
+                                <div class="mind-input-field" id="mindInput1" contenteditable="true"
+                                    data-placeholder="พิมพ์ความรู้สึก..." role="textbox"
+                                    aria-label="บันทึกความรู้สึก 1"></div>
+                                <button class="mind-input-clear" id="mindClear1"
+                                    onclick="event.stopPropagation(); clearMindInput('mindInput1')" title="ลบข้อความ"
+                                    aria-label="ลบข้อความ" style="display:none;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="counter-badge mind-input-counter" id="count-mindInput1">0</div>
+
+                            <div class="mind-input-btn" id="mindInputBtn2"
+                                onclick="recordMindInput('mindInput2', 'mindInputBtn2')" ontouchstart="">
+                                <div class="mind-input-field" id="mindInput2" contenteditable="true"
+                                    data-placeholder="พิมพ์ความรู้สึก..." role="textbox"
+                                    aria-label="บันทึกความรู้สึก 2"></div>
+                                <button class="mind-input-clear" id="mindClear2"
+                                    onclick="event.stopPropagation(); clearMindInput('mindInput2')" title="ลบข้อความ"
+                                    aria-label="ลบข้อความ" style="display:none;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="counter-badge mind-input-counter" id="count-mindInput2">0</div>
+                        </div>
+
+                        <div class="reset-wrapper mind-action-wrapper" style="gap: 15px;">
+                            <button class="confirm-btn" id="mindConfirmBtn" onclick="confirmMindInputs()">ตกลง</button>
+                            <button class="reset-btn" onclick="resetMindInputs()">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pair 1: จิตโลภ / จิตไม่โลภ (Purple Glow) -->
+                <section class="sensation-card mind-card">
+                    <div class="card-outline">
+                        <h2 class="section-title mind-pair-title pair-lobha" id="mindLobhaTitle">โลภะ · อโลภะ</h2>
+                        <div class="button-group dual-group mind-btn-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-lobha" id="mind-lobha"
+                                    onclick="recordMindState('lobha', 'mind-lobha')">จิตโลภ</button>
+                                <div class="counter-badge mind-counter" id="count-mind-lobha">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-alobha" id="mind-alobha"
+                                    onclick="recordMindState('alobha', 'mind-alobha')">จิตไม่โลภ</button>
+                                <div class="counter-badge mind-counter" id="count-mind-alobha">0</div>
+                            </div>
+                        </div>
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetMindGroup('lobha')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pair 2: จิตโกรธ / จิตไม่โกรธ (Red Glow) -->
+                <section class="sensation-card mind-card">
+                    <div class="card-outline">
+                        <h2 class="section-title mind-pair-title pair-dosa" id="mindDosaTitle">โทสะ · อโทสะ</h2>
+                        <div class="button-group dual-group mind-btn-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-dosa" id="mind-dosa"
+                                    onclick="recordMindState('dosa', 'mind-dosa')">จิตโกรธ</button>
+                                <div class="counter-badge mind-counter" id="count-mind-dosa">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-adosa" id="mind-adosa"
+                                    onclick="recordMindState('adosa', 'mind-adosa')">จิตไม่โกรธ</button>
+                                <div class="counter-badge mind-counter" id="count-mind-adosa">0</div>
+                            </div>
+                        </div>
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetMindGroup('dosa')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pair 3: จิตหลง / จิตไม่หลง (Dark Grey Glow) -->
+                <section class="sensation-card mind-card">
+                    <div class="card-outline">
+                        <h2 class="section-title mind-pair-title pair-moha" id="mindMohaTitle">โมหะ · อโมหะ</h2>
+                        <div class="button-group dual-group mind-btn-group">
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-moha" id="mind-moha"
+                                    onclick="recordMindState('moha', 'mind-moha')">จิตหลง</button>
+                                <div class="counter-badge mind-counter" id="count-mind-moha">0</div>
+                            </div>
+                            <div class="btn-wrapper">
+                                <button class="circle-btn mind-btn btn-amoha" id="mind-amoha"
+                                    onclick="recordMindState('amoha', 'mind-amoha')">จิตไม่หลง</button>
+                                <div class="counter-badge mind-counter" id="count-mind-amoha">0</div>
+                            </div>
+                        </div>
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetMindGroup('moha')">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="footer-link-wrapper">
+                    <a href="#" class="footer-link" id="mindFooterLink"
+                        onclick="navigateTo('mind-guide')">วิธีการเจริญสติสังเกตจิต</a>
+                </div>
+            </section>
+
+            <!-- ================= MIND GUIDE VIEW ================= -->
+            <section id="view-mind-guide" class="view-section" style="display: none;">
+                <div class="guide-page">
+                    <!-- Back Button -->
+                    <div class="guide-back-wrapper">
+                        <button class="guide-back-btn" onclick="navigateTo('mind')" aria-label="กลับไปหน้าหมวดจิต">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 12H5"></path>
+                                <path d="M12 19l-7-7 7-7"></path>
+                            </svg>
+                            <span id="mindGuideBackText">กลับ</span>
+                        </button>
+                    </div>
+
+                    <!-- Page Title with Decorative Elements -->
+                    <div class="guide-hero">
+                        <div class="guide-hero-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#mindGuideGrad)"
+                                stroke-width="1.2">
+                                <defs>
+                                    <linearGradient id="mindGuideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#7c5ce0" />
+                                        <stop offset="50%" stop-color="#a78bfa" />
+                                        <stop offset="100%" stop-color="#818cf8" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20" stroke-dasharray="3 3"></path>
+                                <circle cx="12" cy="12" r="4" fill="rgba(167, 139, 250, 0.2)"></circle>
+                                <circle cx="12" cy="12" r="1.5" fill="rgba(124, 92, 224, 0.5)"></circle>
+                            </svg>
+                        </div>
+                        <h1 class="guide-main-title" id="mindGuideMainTitle">จิตตานุปัสสนาสติปัฏฐาน</h1>
+                        <p class="guide-main-subtitle" id="mindGuideMainSubtitle">วิธีการเจริญสติสังเกตจิต</p>
+                    </div>
+
+                    <!-- Section: Overview -->
+                    <div class="guide-card guide-card-intro">
+                        <div class="guide-card-inner">
+                            <div class="guide-section-badge">
+                                <span class="badge-dot"></span>
+                                <span id="mindGuideOverviewBadge">ภาพรวม</span>
+                            </div>
+                            <p class="guide-text" id="mindGuideOverviewText">การดูจิต ท่านสอนให้ดูจิตเป็นคู่ๆ
+                                ให้รู้ถึงความมีอยู่และความไม่มีอยู่ของจิตชนิดนั้นๆ
+                                เพื่อให้เห็นถึงความไม่เที่ยงแท้แน่นอนของจิตชนิดนั้นๆ</p>
+                        </div>
+                    </div>
+
+                    <!-- Section: ความไม่เที่ยง (Impermanence) -->
+                    <div class="guide-card guide-card-mind">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-mind" id="mindGuideImpermanenceTitle">
+                                <span class="guide-icon-circle guide-icon-mind">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                    </svg>
+                                </span>
+                                ความไม่เที่ยงของจิต
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-mind">
+                                <div class="highlight-icon">💭</div>
+                                <p class="guide-text" id="mindGuideImpermanenceDesc">ถ้าสิ่งนั้นเที่ยงแท้แน่นอนจริง
+                                    สิ่งนั้นจะต้องแน่ สิ่งนั้นจะต้องหนึ่ง สิ่งนั้นจะต้องไม่เปลี่ยนแปลง
+                                    ก็ในเมื่อสิ่งนั้นเป็นสอง ไม่เที่ยง เปลี่ยนแปลง สิ่งนั้น จะเที่ยงแท้แน่นอนได้อย่างไร
+                                    เมื่อสิ่งนั้นไม่เที่ยงแท้แน่นอน ควรหรือที่จะเข้าไปยึดมั่นถือมั่นสิ่งนั้นว่า
+                                    สิ่งนั้นเป็นตัวเราเป็นของเรา</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: วิธีปฏิบัติ (Practice Method) -->
+                    <div class="guide-card guide-card-practice">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-practice" id="mindGuidePracticeTitle">
+                                <span class="guide-icon-circle guide-icon-practice">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5"></path>
+                                        <path d="M2 12l10 5 10-5"></path>
+                                    </svg>
+                                </span>
+                                วิธีปฏิบัติ
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">✍️</div>
+                                <p class="guide-text" id="mindGuidePracticeDesc">ให้จับคู่จิตเป็นคู่ๆ
+                                    แล้วพิมพ์ลงไปในช่องบันทึกสภาวะจิตก็ได้เช่น (จิตหงุดหงิด , จิตไม่หงุดหงิด)
+                                    แล้วสังเกตถึงความมีอยู่ และความไม่มีอยู่ของจิตอยู่อย่างนั้น ทั้งวัน ทั้งคืน ยืน เดิน
+                                    นั่ง นอน ฯลฯ แล้วจะเห็นความไม่เที่ยงแท้แน่นอนของจิต</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Final Insight -->
+                    <div class="guide-card guide-card-liberation">
+                        <div class="guide-card-inner guide-final-card">
+                            <p class="guide-text guide-text-golden" id="mindGuideFinalText">เกมส์เจริญสตินี้
+                                ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น
+                                เพราะขณะที่กดปุ่ม มีการนับจำนวนจิตแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ
+                                เท่ากับจำนวนที่กดปุ่มลงไปนั้น</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom spacer -->
+                    <div style="height: 40px;"></div>
+                </div>
+            </section>
+
+            <!-- ================= VEDANA GUIDE VIEW ================= -->
+            <section id="view-guide" class="view-section" style="display: none;">
+                <div class="guide-page">
+                    <!-- Back Button -->
+                    <div class="guide-back-wrapper">
+                        <button class="guide-back-btn" onclick="navigateTo('vedana')" aria-label="กลับไปหน้าหมวดเวทนา">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 12H5"></path>
+                                <path d="M12 19l-7-7 7-7"></path>
+                            </svg>
+                            <span id="guideBackText">กลับ</span>
+                        </button>
+                    </div>
+
+                    <!-- Page Title with Decorative Elements -->
+                    <div class="guide-hero">
+                        <div class="guide-hero-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#guideGrad)"
+                                stroke-width="1.2">
+                                <defs>
+                                    <linearGradient id="guideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#7c5ce0" />
+                                        <stop offset="50%" stop-color="#a78bfa" />
+                                        <stop offset="100%" stop-color="#818cf8" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20" stroke-dasharray="3 3"></path>
+                                <circle cx="12" cy="12" r="4" fill="rgba(167, 139, 250, 0.2)"></circle>
+                                <circle cx="12" cy="12" r="1.5" fill="rgba(124, 92, 224, 0.5)"></circle>
+                            </svg>
+                        </div>
+                        <h1 class="guide-main-title" id="guideMainTitle">เวทนานุปัสสนาสติปัฏฐาน</h1>
+                        <p class="guide-main-subtitle" id="guideMainSubtitle">วิธีการเจริญสติด้วยการสังเกตเวทนา</p>
+                    </div>
+
+                    <!-- Section: Vedana Overview -->
+                    <div class="guide-card guide-card-intro">
+                        <div class="guide-card-inner">
+                            <div class="guide-section-badge">
+                                <span class="badge-dot"></span>
+                                <span id="guideOverviewBadge">ภาพรวม</span>
+                            </div>
+                            <p class="guide-text" id="guideOverviewText">เวทนาจะมีตั้งแต่ <strong>เวทนา 2</strong>
+                                ไปจนถึง <strong>เวทนา 108</strong></p>
+                            <p class="guide-text guide-text-note" id="guideOverviewNote">เวทนา 2 จะมี
+                                <em>เวทนาทางร่างกาย</em> กับ <em>เวทนาทางใจ</em>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Section: เวทนาทางร่างกาย (Physical Vedana) -->
+                    <div class="guide-card guide-card-body">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-body" id="guideBodyTitle">
+                                <span class="guide-icon-circle guide-icon-body">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                เวทนาทางร่างกาย
+                            </h2>
+                            <p class="guide-text" id="guideBodyDesc">เวทนาทางร่างกาย แบ่งออกเป็น <strong>2</strong> คือ
+                            </p>
+                            <div class="guide-vedana-pills">
+                                <div class="guide-pill guide-pill-sukh">
+                                    <span class="pill-dot pill-dot-sukh"></span>
+                                    <span id="guideBodySukh">ความรู้สึกสุข</span>
+                                    <span class="pill-sub" id="guideBodySukhSub">(ทางร่างกาย)</span>
+                                </div>
+                                <div class="guide-pill guide-pill-dukkh">
+                                    <span class="pill-dot pill-dot-dukkh"></span>
+                                    <span id="guideBodyDukkh">ความรู้สึกทุกข์</span>
+                                    <span class="pill-sub" id="guideBodyDukkhSub">(ทางร่างกาย)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: เวทนาทางใจ (Mental Vedana) -->
+                    <div class="guide-card guide-card-mind">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-mind" id="guideMindTitle">
+                                <span class="guide-icon-circle guide-icon-mind">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                    </svg>
+                                </span>
+                                เวทนาทางใจ
+                            </h2>
+                            <p class="guide-text" id="guideMindDesc">เวทนาทางใจ แบ่งออกเป็น <strong>3</strong> คือ</p>
+                            <div class="guide-vedana-pills">
+                                <div class="guide-pill guide-pill-sukh">
+                                    <span class="pill-dot pill-dot-sukh"></span>
+                                    <span id="guideMindSukh">ความรู้สึกสุข</span>
+                                    <span class="pill-sub" id="guideMindSukhSub">(ทางใจ)</span>
+                                </div>
+                                <div class="guide-pill guide-pill-dukkh">
+                                    <span class="pill-dot pill-dot-dukkh"></span>
+                                    <span id="guideMindDukkh">ความรู้สึกทุกข์</span>
+                                    <span class="pill-sub" id="guideMindDukkhSub">(ทางใจ)</span>
+                                </div>
+                                <div class="guide-pill guide-pill-neutral">
+                                    <span class="pill-dot pill-dot-neutral"></span>
+                                    <span id="guideMindNeutral">ความรู้สึกเฉยๆ</span>
+                                    <span class="pill-sub" id="guideMindNeutralSub">(ทางใจ)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: วิธีเจริญสติ (Body Practice) -->
+                    <div class="guide-card guide-card-practice">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-practice" id="guidePracticeTitle">
+                                <span class="guide-icon-circle guide-icon-practice">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5"></path>
+                                        <path d="M2 12l10 5 10-5"></path>
+                                    </svg>
+                                </span>
+                                วิธีเจริญสติด้วยการดูเวทนา
+                            </h2>
+
+                            <div class="guide-highlight-box guide-highlight-body">
+                                <div class="highlight-icon">🧘</div>
+                                <p class="guide-text" id="guidePracticeBody">ถ้าเวทนาทางกาย (สุข, ทุกข์)
+                                    ตรงส่วนไหนของกาย ก็ให้มีสติ กำหนดรู้เวทนา ไปตรงนั้น ในส่วนต่างๆ ของกาย</p>
+                            </div>
+
+                            <div class="guide-highlight-box guide-highlight-mind">
+                                <div class="highlight-icon">💭</div>
+                                <p class="guide-text" id="guidePracticeMind">ถ้ามีความรู้สึก (สุข, ทุกข์ หรือ เฉยๆ)
+                                    ทางใจ ก็ให้มีสติ กำหนดรู้ เวทนาทางใจ ไป ณ ขณะนั้น</p>
+                            </div>
+
+                            <div class="guide-insight-box">
+                                <p class="guide-text guide-text-insight" id="guidePracticeInsight">แต่เวทนาทางใจ
+                                    จะเกิดได้ทีละอย่าง เช่น ขณะที่มีความสุขใจอยู่ ในขณะนั้น ความทุกข์ และ ความเฉยๆ
+                                    ทางใจจะไม่มี ให้มีสติกำหนดรู้ เวทนาทางใจ</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: ลองสังเกต (Try Observing) -->
+                    <div class="guide-card guide-card-observe">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-observe" id="guideObserveTitle">
+                                <span class="guide-icon-circle guide-icon-observe">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </span>
+                                ลองสังเกต ณ ขณะนี้
+                            </h2>
+                            <div class="guide-observe-prompt">
+                                <p class="guide-text guide-text-center" id="guideObserveText">ความรู้สึกทางใจเป็นแบบไหน?
+                                </p>
+                                <div class="guide-observe-options">
+                                    <div class="observe-option observe-sukh" id="guideObserveSukh">ขณะนี้ จิตใจมีความสุข
+                                    </div>
+                                    <div class="observe-option observe-dukkh" id="guideObserveDukkh">หรือ มีความทุกข์
+                                    </div>
+                                    <div class="observe-option observe-neutral" id="guideObserveNeutral">หรือ เฉยๆ</div>
+                                </div>
+                                <p class="guide-text guide-text-highlight" id="guideObserveConclusion">ให้มีสติ
+                                    รู้เท่าทันเวทนา</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: ทวารทั้ง 6 (Six Sense Doors) -->
+                    <div class="guide-card guide-card-senses">
+                        <div class="guide-card-inner">
+                            <div class="guide-section-badge">
+                                <span class="badge-dot badge-dot-alt"></span>
+                                <span id="guideSensesBadge">หรือ…</span>
+                            </div>
+
+                            <div class="guide-sense-list">
+                                <div class="guide-sense-item">
+                                    <div class="sense-icon">👁️</div>
+                                    <div class="sense-content">
+                                        <p class="sense-action" id="guideSenseEye">ในขณะที่.. <strong>ตา</strong>
+                                            มองเห็น <strong>รูป</strong></p>
+                                        <p class="sense-vedana" id="guideSenseEyeVedana">จิตใจ มี(ความสุข ทุกข์ หรือ
+                                            เฉยๆ) ให้มีสติ รู้ทัน</p>
+                                    </div>
+                                </div>
+
+                                <div class="guide-sense-item">
+                                    <div class="sense-icon">👂</div>
+                                    <div class="sense-content">
+                                        <p class="sense-action" id="guideSenseEar">ในขณะที่.. <strong>หู</strong> ได้ยิน
+                                            <strong>เสียง</strong>
+                                        </p>
+                                        <p class="sense-vedana" id="guideSenseEarVedana">จิตใจ มี(ความสุข ทุกข์ หรือ
+                                            เฉยๆ) ให้มีสติ รู้ทัน</p>
+                                    </div>
+                                </div>
+
+                                <div class="guide-sense-item">
+                                    <div class="sense-icon">💭</div>
+                                    <div class="sense-content">
+                                        <p class="sense-action" id="guideSenseThink">ในขณะที่ มี<strong>ความคิด</strong>
+                                            เกิดขึ้น</p>
+                                        <p class="sense-vedana" id="guideSenseThinkVedana">จิตใจ มี(ความสุข ทุกข์ หรือ
+                                            เฉยๆ) ให้มีสติ รู้ทัน</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: เวทนา 5 (Vedana 5 Conclusion) -->
+                    <div class="guide-card guide-card-vedana5">
+                        <div class="guide-card-inner">
+                            <p class="guide-text" id="guideVedana5Desc">แล้วให้สังเกตเห็นว่า..</p>
+                            <div class="guide-vedana5-diagram">
+                                <div class="vedana5-group vedana5-body">
+                                    <div class="vedana5-label" id="guideV5BodyLabel">เวทนา 2 ทางร่างกาย</div>
+                                    <div class="vedana5-items">
+                                        <span class="vedana5-chip v5-sukh">สุข</span>
+                                        <span class="vedana5-chip v5-dukkh">ทุกข์</span>
+                                    </div>
+                                </div>
+                                <div class="vedana5-separator">
+                                    <div class="separator-line"></div>
+                                    <span class="separator-text" id="guideV5SepText">แยกออกจากกัน คนละส่วนกัน</span>
+                                    <div class="separator-line"></div>
+                                </div>
+                                <div class="vedana5-group vedana5-mind">
+                                    <div class="vedana5-label" id="guideV5MindLabel">เวทนา 3 ทางใจ</div>
+                                    <div class="vedana5-items">
+                                        <span class="vedana5-chip v5-sukh">สุข</span>
+                                        <span class="vedana5-chip v5-dukkh">ทุกข์</span>
+                                        <span class="vedana5-chip v5-neutral">เฉยๆ</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="guide-text guide-text-center guide-text-conclusion" id="guideVedana5Conclusion">
+                                ก็จะเรียกว่า <strong>เวทนา 5</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Section: อุภโตภาควิมุต (Final Insight) -->
+                    <div class="guide-card guide-card-liberation">
+                        <div class="guide-card-inner guide-final-card">
+                            <p class="guide-text guide-text-golden" id="guideLiberationText">เกมส์เจริญสตินี้
+                                ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น
+                                เพราะขณะที่กดปุ่ม มีการนับจำนวนเวทนาแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ
+                                เท่ากับจำนวนที่กดปุ่มลงไปนั้น</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom spacer -->
+                    <div style="height: 40px;"></div>
+                </div>
+            </section>
+
+            <!-- ================= DHAMMA VIEW ================= -->
+            <section id="view-dhamma" class="view-section" style="display: none;">
+                <div class="page-hero-icon dhamma-hero">
+                    <div class="page-hero-emoji hero-icon-dhamma">🪷</div>
+                </div>
+                <h1 class="main-title" id="pageTitleDhamma">ธรรมานุปัสสนาสติปัฏฐาน</h1>
+
+                <!-- Dhamma Buttons -->
+                <section class="sensation-card dhamma-card">
+                    <div class="card-outline">
+                        <h2 class="section-title text-red" id="dhammaPostureTitle" style="display:none;">หมวดธรรม</h2>
+                        <div class="button-group dhamma-button-group">
+
+                            <!-- Button 1 -->
+                            <div class="btn-wrapper wide-btn-wrapper">
+                                <button class="circle-btn wide-btn btn-rainbow" id="dhamma-impermanence"
+                                    onclick="recordDhamma('dhamma-impermanence')">ตามเห็นความไม่เที่ยง</button>
+                                <div class="counter-badge dhamma-counter wide-counter" id="count-dhamma-impermanence">0
+                                </div>
+                            </div>
+
+                            <!-- Button 2 -->
+                            <div class="btn-wrapper wide-btn-wrapper">
+                                <button class="circle-btn wide-btn btn-rainbow" id="dhamma-fading"
+                                    onclick="recordDhamma('dhamma-fading')">ตามเห็นความจางคลาย</button>
+                                <div class="counter-badge dhamma-counter wide-counter" id="count-dhamma-fading">0</div>
+                            </div>
+
+                            <!-- Button 3 -->
+                            <div class="btn-wrapper wide-btn-wrapper">
+                                <button class="circle-btn wide-btn btn-rainbow" id="dhamma-cessation"
+                                    onclick="recordDhamma('dhamma-cessation')">ตามเห็นความดับ</button>
+                                <div class="counter-badge dhamma-counter wide-counter" id="count-dhamma-cessation">0
+                                </div>
+                            </div>
+
+                            <!-- Button 4 -->
+                            <div class="btn-wrapper wide-btn-wrapper">
+                                <button class="circle-btn wide-btn btn-rainbow" id="dhamma-relinquishment"
+                                    onclick="recordDhamma('dhamma-relinquishment')">ตามเห็นความสลัดคืน</button>
+                                <div class="counter-badge dhamma-counter wide-counter" id="count-dhamma-relinquishment">
+                                    0</div>
+                            </div>
+
+                        </div>
+
+                        <!-- Reset Button -->
+                        <div class="reset-wrapper">
+                            <button class="reset-btn" onclick="resetDhammaGroup()" id="dhammaResetBtn">รีเซ็ต</button>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="footer-link-wrapper">
+                    <a href="#" class="footer-link" id="dhammaGuideLink"
+                        onclick="navigateTo('dhamma-guide')">วิธีการเจริญสติสังเกตธรรม</a>
+                </div>
+            </section>
+
+            <!-- ================= DHAMMA GUIDE VIEW ================= -->
+            <section id="view-dhamma-guide" class="view-section" style="display: none;">
+                <div class="guide-page">
+                    <!-- Back Button -->
+                    <div class="guide-back-wrapper">
+                        <button class="guide-back-btn" onclick="navigateTo('dhamma')" aria-label="กลับไปหน้าหมวดธรรม">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 12H5"></path>
+                                <path d="M12 19l-7-7 7-7"></path>
+                            </svg>
+                            <span id="dhammaGuideBackText">กลับ</span>
+                        </button>
+                    </div>
+
+                    <!-- Page Title with Decorative Elements -->
+                    <div class="guide-hero">
+                        <div class="guide-hero-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#dhammaGuideGrad)"
+                                stroke-width="1.2">
+                                <defs>
+                                    <linearGradient id="dhammaGuideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff9a9e" />
+                                        <stop offset="50%" stop-color="#fecfef" />
+                                        <stop offset="100%" stop-color="#a1c4fd" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20" stroke-dasharray="3 3"></path>
+                                <circle cx="12" cy="12" r="4" fill="rgba(255, 154, 158, 0.2)"></circle>
+                                <circle cx="12" cy="12" r="1.5" fill="rgba(161, 196, 253, 0.5)"></circle>
+                            </svg>
+                        </div>
+                        <h1 class="guide-main-title" id="dhammaGuideMainTitle">ธรรมานุปัสสนาสติปัฏฐาน</h1>
+                        <p class="guide-main-subtitle" id="dhammaGuideMainSubtitle">วิธีการเจริญสติสังเกตธรรม</p>
+                    </div>
+
+                    <!-- Section: Overview -->
+                    <div class="guide-card guide-card-intro">
+                        <div class="guide-card-inner">
+                            <div class="guide-section-badge">
+                                <span class="badge-dot"></span>
+                                <span id="dhammaGuideOverviewBadge">ภาพรวม</span>
+                            </div>
+                            <p class="guide-text" id="dhammaGuideOverviewText">ในหมวด"ธรรม" หรือ "ธรรมมานุปัสสนา" 4
+                                ข้อหลังนี้ ไม่จำเป็นจะต้องเห็นทั้งหมด เห็นแค่ข้อใดข้อนึงตามจริตนิสัย ตามกรรมฐาน
+                                ก็เรียกว่าเห็นในหมวดธรรมแล้ว เพราะในหมวดธรรมทั้งหมด จัดเข้าไตรลักษณ์ทั้งหมด</p>
+                        </div>
+                    </div>
+
+                    <!-- Section: วิปัสสนาและพหุลีกตาธรรม -->
+                    <div class="guide-card guide-card-mind">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-mind" id="dhammaGuideVipassanaTitle">
+                                <span class="guide-icon-circle guide-icon-mind">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                    </svg>
+                                </span>
+                                วิปัสสนาและพหุลีกตาธรรม
+                            </h2>
+                            <div class="guide-highlight-box guide-highlight-mind">
+                                <div class="highlight-icon">💡</div>
+                                <p class="guide-text" id="dhammaGuideVipassanaText">และการเห็น กาย เวทนา จิต ธรรม
+                                    เป็นวิปัสสนา ยังเห็นแค่ครั้งเดียวไม่พอ เพราะยังเป็น "พหุลีกตาธรรม" คือ
+                                    จะต้องเห็นให้มาก เห็นให้เป็นความเคยชิน เห็นให้เป็นจริตนิสัย</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: ความหมายของตามเห็นความไม่เที่ยง -->
+                    <div class="guide-card guide-card-practice">
+                        <div class="guide-card-inner">
+                            <h2 class="guide-section-title guide-title-practice" id="dhammaGuidePracticeTitle">
+                                <span class="guide-icon-circle guide-icon-practice">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5"></path>
+                                        <path d="M2 12l10 5 10-5"></path>
+                                    </svg>
+                                </span>
+                                ความหมาย
+                            </h2>
+
+                            <p class="guide-text" id="dhammaGuideMeaningIntro"
+                                style="margin-bottom: 18px; font-weight: 500;">คำว่า…ตามเห็นความไม่เที่ยงของธรรม ณ
+                                ที่นี้ หมายถึง</p>
+
+                            <div class="guide-highlight-box guide-highlight-mind"
+                                style="display: flex; flex-direction: column; gap: 18px;">
+                                <p class="guide-text" id="dhammaGuideImpText"><strong>อนิจจานุปัสสนา:</strong>
+                                    ตามเห็นความไม่เที่ยงของกรรมฐานนั้นๆ ตามเห็นความไม่เที่ยงของ กาย เวทนา จิต ธรรม
+                                    นี้เรียกว่า "อนิจจานุปัสสนา"</p>
+                                <p class="guide-text" id="dhammaGuideFadeText"><strong>วิราคานุปัสสนา:</strong>
+                                    ตามเห็นความสลายไป , ความจางคลายไป ของกรรมฐานนั้นๆ ตามเห็นความสลายไป ,
+                                    ความจางคลายไปของ กาย เวทนา จิต ธรรม นี้เรียกว่า "วิราคานุปัสสนา"</p>
+                                <p class="guide-text" id="dhammaGuideCessText"><strong>นิโรธานุปัสสนา:</strong>
+                                    ตามเห็นความดับไป ของกรรมฐานนั้นๆ ตามเห็นความดับไปของ กาย เวทนา จิต ธรรม นี้เรียกว่า
+                                    "นิโรธานุปัสสนา"</p>
+                                <p class="guide-text" id="dhammaGuideRelText"><strong>ปฏินิสสัคคานุปัสสนา:</strong>
+                                    ตามเห็นความสลัดคืนไปของกรรมฐานนั้นๆ ตามเห็นความสลัดคืนไปของ กาย เวทนา จิต ธรรม
+                                    นี้เรียกว่า "ปฏินิสสัคคานุปัสสนา"</p>
+                            </div>
+
+                            <p class="guide-text" id="dhammaGuideConclusion"
+                                style="margin-top: 18px; font-weight: 500; text-align: center;">เหล่านี้เรียกว่า
+                                หมวดธรรม.</p>
+                        </div>
+                    </div>
+
+                    <!-- Section: Final Insight -->
+                    <div class="guide-card guide-card-liberation">
+                        <div class="guide-card-inner guide-final-card">
+                            <p class="guide-text guide-text-golden" id="dhammaGuideFinalText">เกมส์เจริญสตินี้
+                                เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น
+                                เพราะขณะที่กดปุ่ม มีการนับจำนวนแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ
+                                เท่ากับจำนวนที่กดปุ่มลงไปนั้น</p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom spacer -->
+                    <div style="height: 40px;"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- App Window Footer -->
+        <footer class="app-footer">
+            <div class="footer-text">Araro Meditation © 2026 | Contact Us | Privacy Policy</div>
+            <div class="footer-icons">
+                <a href="#" aria-label="ติดตามทาง Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg></a>
+                <a href="#" aria-label="ติดตามทาง Facebook"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg></a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================= SUMMARY MODAL ================= -->
+    <div class="summary-overlay" id="summaryOverlay" style="display: none;">
+        <div class="summary-modal" id="summaryModal">
+            <div class="summary-header">
+                <div class="summary-lotus">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="url(#summaryGrad)"
+                        stroke-width="1.5">
+                        <defs>
+                            <linearGradient id="summaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#a78bfa" />
+                                <stop offset="100%" stop-color="#818cf8" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20" stroke-dasharray="4 4"></path>
+                        <circle cx="12" cy="12" r="3" fill="rgba(167, 139, 250, 0.3)"></circle>
+                    </svg>
+                </div>
+                <h2 class="summary-title" id="summaryTitle">สรุปการเจริญสติ</h2>
+                <div class="summary-time-box">
+                    <span class="summary-time-label" id="summaryTimeLabel">เวลาเจริญสติ</span>
+                    <span class="summary-time-value" id="summaryTimeValue">00:00:00</span>
+                </div>
+            </div>
+
+            <div class="summary-body">
+                <!-- Body Postures (กาย) -->
+                <div class="summary-category">
+                    <h3 class="summary-cat-title" id="sumBodyTitle">กาย (อิริยาบถ 4)</h3>
+                    <div class="summary-scores summary-scores-body">
+                        <div class="summary-score-item score-walk">
+                            <span class="score-label" id="sumWalkLabel">เดิน</span>
+                            <span class="score-value" id="sumWalk">0</span>
+                        </div>
+                        <div class="summary-score-item score-stand">
+                            <span class="score-label" id="sumStandLabel">ยืน</span>
+                            <span class="score-value" id="sumStand">0</span>
+                        </div>
+                        <div class="summary-score-item score-sit">
+                            <span class="score-label" id="sumSitLabel">นั่ง</span>
+                            <span class="score-value" id="sumSit">0</span>
+                        </div>
+                        <div class="summary-score-item score-lie">
+                            <span class="score-label" id="sumLieLabel">นอน</span>
+                            <span class="score-value" id="sumLie">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vedana Physical -->
+                <div class="summary-category">
+                    <h3 class="summary-cat-title" id="sumPhyTitle">เวทนาทางกาย</h3>
+                    <div class="summary-scores">
+                        <div class="summary-score-item score-sukh">
+                            <span class="score-label" id="sumPhySukhLabel">สุข</span>
+                            <span class="score-value" id="sumPhySukh">0</span>
+                        </div>
+                        <div class="summary-score-item score-dukkh">
+                            <span class="score-label" id="sumPhyDukkhLabel">ทุกข์</span>
+                            <span class="score-value" id="sumPhyDukkh">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vedana Mental -->
+                <div class="summary-category">
+                    <h3 class="summary-cat-title" id="sumMenTitle">เวทนาทางใจ</h3>
+                    <div class="summary-scores">
+                        <div class="summary-score-item score-sukh">
+                            <span class="score-label" id="sumMenSukhLabel">สุข</span>
+                            <span class="score-value" id="sumMenSukh">0</span>
+                        </div>
+                        <div class="summary-score-item score-dukkh">
+                            <span class="score-label" id="sumMenDukkhLabel">ทุกข์</span>
+                            <span class="score-value" id="sumMenDukkh">0</span>
+                        </div>
+                        <div class="summary-score-item score-neutral">
+                            <span class="score-label" id="sumMenNeutralLabel">เฉยๆ</span>
+                            <span class="score-value" id="sumMenNeutral">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mind States -->
+                <div class="summary-category">
+                    <h3 class="summary-cat-title" id="sumMindTitle">สภาวะจิต</h3>
+                    <div class="summary-scores summary-scores-mind">
+                        <div class="summary-score-item score-lobha">
+                            <span class="score-label" id="sumLobhaLabel">จิตโลภ</span>
+                            <span class="score-value" id="sumLobha">0</span>
+                        </div>
+                        <div class="summary-score-item score-alobha">
+                            <span class="score-label" id="sumAlobhaLabel">จิตไม่โลภ</span>
+                            <span class="score-value" id="sumAlobha">0</span>
+                        </div>
+                        <div class="summary-score-item score-dosa">
+                            <span class="score-label" id="sumDosaLabel">จิตโกรธ</span>
+                            <span class="score-value" id="sumDosa">0</span>
+                        </div>
+                        <div class="summary-score-item score-adosa">
+                            <span class="score-label" id="sumAdosaLabel">จิตไม่โกรธ</span>
+                            <span class="score-value" id="sumAdosa">0</span>
+                        </div>
+                        <div class="summary-score-item score-moha">
+                            <span class="score-label" id="sumMohaLabel">จิตหลง</span>
+                            <span class="score-value" id="sumMoha">0</span>
+                        </div>
+                        <div class="summary-score-item score-amoha">
+                            <span class="score-label" id="sumAmohaLabel">จิตไม่หลง</span>
+                            <span class="score-value" id="sumAmoha">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mind Input Notes -->
+                <div class="summary-category" id="sumMindNotesSection" style="display: none;">
+                    <h3 class="summary-cat-title" id="sumMindNotesTitle">บันทึกสภาวะจิต</h3>
+                    <div class="summary-notes">
+                        <div class="summary-note-item" id="sumNote1" style="display: none;">
+                            <span class="note-text" id="sumNote1Text"></span>
+                            <span class="note-count" id="sumNote1Count">0</span>
+                        </div>
+                        <div class="summary-note-item" id="sumNote2" style="display: none;">
+                            <span class="note-text" id="sumNote2Text"></span>
+                            <span class="note-count" id="sumNote2Count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dhamma Notes -->
+                <div class="summary-category" id="sumDhammaSection">
+                    <h3 class="summary-cat-title" id="sumDhammaTitle">ธรรม (ธรรมานุปัสสนา)</h3>
+                    <div class="summary-scores summary-scores-dhamma" style="flex-direction: column; gap: 10px;">
+                        <div class="summary-score-item score-dhamma-1"
+                            style="justify-content: space-between; padding: 8px 12px; width: 100%;">
+                            <span class="score-label" id="sumDhammaImpLabel">ความไม่เที่ยง</span>
+                            <span class="score-value" id="sumDhammaImp">0</span>
+                        </div>
+                        <div class="summary-score-item score-dhamma-2"
+                            style="justify-content: space-between; padding: 8px 12px; width: 100%;">
+                            <span class="score-label" id="sumDhammaFadeLabel">ความจางคลาย</span>
+                            <span class="score-value" id="sumDhammaFade">0</span>
+                        </div>
+                        <div class="summary-score-item score-dhamma-3"
+                            style="justify-content: space-between; padding: 8px 12px; width: 100%;">
+                            <span class="score-label" id="sumDhammaCessLabel">ความดับ</span>
+                            <span class="score-value" id="sumDhammaCess">0</span>
+                        </div>
+                        <div class="summary-score-item score-dhamma-4"
+                            style="justify-content: space-between; padding: 8px 12px; width: 100%;">
+                            <span class="score-label" id="sumDhammaRelLabel">ความสลัดคืน</span>
+                            <span class="score-value" id="sumDhammaRel">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-footer">
+                <button class="summary-close-btn" id="summaryCloseBtn" onclick="closeSummary()">ปิด</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
