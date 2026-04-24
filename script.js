@@ -1,0 +1,1772 @@
+// state dictionary to hold the counts of each button
+const counts = {
+    'phy-sukh': 0,
+    'phy-dukkh': 0,
+    'men-sukh': 0,
+    'men-dukkh': 0,
+    'men-neutral': 0
+};
+
+// Dhamma state counts
+const dhammaCounts = {
+    'dhamma-impermanence': 0,
+    'dhamma-fading': 0,
+    'dhamma-cessation': 0,
+    'dhamma-relinquishment': 0
+};
+
+// Current language state
+let currentLang = 'th';
+
+// ===== MINDFULNESS TIMER STATE =====
+let mindfulnessActive = false;
+let mindfulnessStartTime = null;
+let mindfulnessElapsed = 0; // in seconds
+let mindfulnessInterval = null;
+
+/**
+ * Handle SPA Navigation Strategy
+ */
+function navigateTo(viewId) {
+    // Check if returning to home while mindfulness is active → show summary
+    if (viewId === 'home' && mindfulnessActive) {
+        stopMindfulness();
+        showSummary();
+    }
+
+    // 1. Hide all sections
+    const sections = document.querySelectorAll('.view-section');
+    sections.forEach(sec => {
+        sec.style.display = 'none';
+        sec.classList.remove('active');
+    });
+
+    // 2. Remove active class from nav items
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    // 3. Show target section
+    const targetSection = document.getElementById(`view-${viewId}`);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+        setTimeout(() => targetSection.classList.add('active'), 10);
+    }
+
+    // 4. Update Nav link active state
+    const indexMap = { 'home': 0, 'body': 1, 'vedana': 2, 'mind': 3, 'dhamma': 4, 'guide': 2, 'body-guide': 1, 'mind-guide': 3, 'dhamma-guide': 4 };
+    const idx = indexMap[viewId];
+    if(idx !== undefined && navItems[idx]) {
+        navItems[idx].classList.add('active');
+    }
+}
+
+// ===== MINDFULNESS TIMER FUNCTIONS =====
+
+/**
+ * Start mindfulness session - triggered by "เริ่มต้นวันนี้" button
+ */
+function startMindfulness() {
+    if (mindfulnessActive) return; // Already running
+
+    mindfulnessActive = true;
+    mindfulnessStartTime = Date.now();
+    mindfulnessElapsed = 0;
+
+    // Show floating timer
+    const timerEl = document.getElementById('mindfulnessTimer');
+    if (timerEl) {
+        timerEl.style.display = 'flex';
+    }
+
+    // Start the interval that updates the timer every second
+    mindfulnessInterval = setInterval(updateTimerDisplay, 1000);
+
+}
+
+/**
+ * Stop mindfulness session
+ */
+function stopMindfulness() {
+    if (!mindfulnessActive) return;
+
+    mindfulnessActive = false;
+
+    // Calculate final elapsed time
+    if (mindfulnessStartTime) {
+        mindfulnessElapsed = Math.floor((Date.now() - mindfulnessStartTime) / 1000);
+    }
+
+    // Stop interval
+    if (mindfulnessInterval) {
+        clearInterval(mindfulnessInterval);
+        mindfulnessInterval = null;
+    }
+
+    // Hide floating timer
+    const timerEl = document.getElementById('mindfulnessTimer');
+    if (timerEl) {
+        timerEl.style.display = 'none';
+    }
+}
+
+/**
+ * Update the floating timer display
+ */
+function updateTimerDisplay() {
+    if (!mindfulnessStartTime) return;
+
+    mindfulnessElapsed = Math.floor((Date.now() - mindfulnessStartTime) / 1000);
+    const formatted = formatTime(mindfulnessElapsed);
+
+    const displayEl = document.getElementById('timerDisplay');
+    if (displayEl) {
+        displayEl.textContent = formatted;
+    }
+}
+
+/**
+ * Format seconds to HH:MM:SS
+ */
+function formatTime(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return [
+        hours.toString().padStart(2, '0'),
+        minutes.toString().padStart(2, '0'),
+        seconds.toString().padStart(2, '0')
+    ].join(':');
+}
+
+/**
+ * Show summary modal with all collected scores
+ */
+function showSummary() {
+    const overlay = document.getElementById('summaryOverlay');
+    if (!overlay) return;
+
+    // Set time
+    const timeValueEl = document.getElementById('summaryTimeValue');
+    if (timeValueEl) {
+        timeValueEl.textContent = formatTime(mindfulnessElapsed);
+    }
+
+    // Set Body Posture scores
+    document.getElementById('sumWalk').textContent = bodyCounts['body-walk'];
+    document.getElementById('sumStand').textContent = bodyCounts['body-stand'];
+    document.getElementById('sumSit').textContent = bodyCounts['body-sit'];
+    document.getElementById('sumLie').textContent = bodyCounts['body-lie'];
+
+    // Set Anapanasati scores
+    document.getElementById('sumBreathOut').textContent = bodyBreathCounts['body-breath-out'];
+    document.getElementById('sumBreathIn').textContent = bodyBreathCounts['body-breath-in'];
+    document.getElementById('sumBreathOutLong').textContent = bodyBreathCounts['body-breath-out-long'];
+    document.getElementById('sumBreathInLong').textContent = bodyBreathCounts['body-breath-in-long'];
+    document.getElementById('sumBreathOutShort').textContent = bodyBreathCounts['body-breath-out-short'];
+    document.getElementById('sumBreathInShort').textContent = bodyBreathCounts['body-breath-in-short'];
+    document.getElementById('sumBreathWholeOut').textContent = bodyBreathCounts['body-breath-whole-out'];
+    document.getElementById('sumBreathWholeIn').textContent = bodyBreathCounts['body-breath-whole-in'];
+    document.getElementById('sumBreathFadeOut').textContent = bodyBreathCounts['body-breath-fade-out'];
+    document.getElementById('sumBreathFadeIn').textContent = bodyBreathCounts['body-breath-fade-in'];
+
+    // Set Vedana Physical scores
+    document.getElementById('sumPhySukh').textContent = counts['phy-sukh'];
+    document.getElementById('sumPhyDukkh').textContent = counts['phy-dukkh'];
+
+    // Set Vedana Mental scores
+    document.getElementById('sumMenSukh').textContent = counts['men-sukh'];
+    document.getElementById('sumMenDukkh').textContent = counts['men-dukkh'];
+    document.getElementById('sumMenNeutral').textContent = counts['men-neutral'];
+
+    // Set Mind State scores
+    document.getElementById('sumLobha').textContent = mindCounts['mind-lobha'];
+    document.getElementById('sumAlobha').textContent = mindCounts['mind-alobha'];
+    document.getElementById('sumDosa').textContent = mindCounts['mind-dosa'];
+    document.getElementById('sumAdosa').textContent = mindCounts['mind-adosa'];
+    document.getElementById('sumMoha').textContent = mindCounts['mind-moha'];
+    document.getElementById('sumAmoha').textContent = mindCounts['mind-amoha'];
+
+    // Set Dhamma scores
+    if (document.getElementById('sumDhammaImp')) {
+        document.getElementById('sumDhammaImp').textContent = dhammaCounts['dhamma-impermanence'];
+        document.getElementById('sumDhammaFade').textContent = dhammaCounts['dhamma-fading'];
+        document.getElementById('sumDhammaCess').textContent = dhammaCounts['dhamma-cessation'];
+        document.getElementById('sumDhammaRel').textContent = dhammaCounts['dhamma-relinquishment'];
+    }
+
+    // Set Mind Input Notes
+    const note1Field = document.getElementById('mindInput1');
+    const note2Field = document.getElementById('mindInput2');
+    const note1Text = note1Field ? note1Field.innerText.trim() : '';
+    const note2Text = note2Field ? note2Field.innerText.trim() : '';
+
+    const notesSection = document.getElementById('sumMindNotesSection');
+    const note1El = document.getElementById('sumNote1');
+    const note2El = document.getElementById('sumNote2');
+
+    let hasNotes = false;
+
+    if (note1Text) {
+        document.getElementById('sumNote1Text').textContent = note1Text;
+        document.getElementById('sumNote1Count').textContent = mindInputCounts['mindInput1'];
+        note1El.style.display = 'flex';
+        hasNotes = true;
+    } else {
+        note1El.style.display = 'none';
+    }
+
+    if (note2Text) {
+        document.getElementById('sumNote2Text').textContent = note2Text;
+        document.getElementById('sumNote2Count').textContent = mindInputCounts['mindInput2'];
+        note2El.style.display = 'flex';
+        hasNotes = true;
+    } else {
+        note2El.style.display = 'none';
+    }
+
+    notesSection.style.display = hasNotes ? 'block' : 'none';
+
+    // Update language-specific labels in summary
+    updateSummaryLanguage();
+
+    // Show the overlay
+    overlay.style.display = 'flex';
+}
+
+/**
+ * Close the summary modal
+ */
+function closeSummary() {
+    const overlay = document.getElementById('summaryOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+
+    // Reset timer state for next session
+    mindfulnessStartTime = null;
+    mindfulnessElapsed = 0;
+    const displayEl = document.getElementById('timerDisplay');
+    if (displayEl) {
+        displayEl.textContent = '00:00:00';
+    }
+
+    // ===== Reset ALL counters in every category =====
+
+    // Reset Vedana Physical & Mental
+    resetGroup('phy');
+    resetGroup('men');
+
+    // Reset Mind State groups
+    resetMindGroup('lobha');
+    resetMindGroup('dosa');
+    resetMindGroup('moha');
+
+    // Reset Mind Inputs
+    resetMindInputs();
+
+    // Reset Body Postures
+    resetBodyPostures();
+    
+    // Reset Body Breath (Anapanasati)
+    if (typeof resetBodyBreathGroup === 'function') resetBodyBreathGroup();
+
+    // Reset Dhamma
+    if (typeof resetDhammaGroup === 'function') resetDhammaGroup();
+}
+
+/**
+ * Update language-specific labels in the summary modal
+ */
+function updateSummaryLanguage() {
+    const dict = langDict[currentLang];
+    if (!dict) return;
+
+    // Summary title & time labels
+    const sumTitle = document.getElementById('summaryTitle');
+    if (sumTitle) sumTitle.textContent = dict.summaryTitle || 'สรุปการเจริญสติ';
+    const sumTimeLabel = document.getElementById('summaryTimeLabel');
+    if (sumTimeLabel) sumTimeLabel.textContent = dict.summaryTimeLabel || 'เวลาเจริญสติ';
+    const sumCloseBtn = document.getElementById('summaryCloseBtn');
+    if (sumCloseBtn) sumCloseBtn.textContent = dict.summaryClose || 'ปิด';
+
+    // Category titles
+    const sumBodyTitle = document.getElementById('sumBodyTitle');
+    if (sumBodyTitle) sumBodyTitle.textContent = dict.sumBodyTitle || 'กาย (อิริยาบถ 4)';
+    const sumPhyTitle = document.getElementById('sumPhyTitle');
+    if (sumPhyTitle) sumPhyTitle.textContent = dict.phyTitle;
+    const sumMenTitle = document.getElementById('sumMenTitle');
+    if (sumMenTitle) sumMenTitle.textContent = dict.menTitle;
+    const sumMindTitle = document.getElementById('sumMindTitle');
+    if (sumMindTitle) sumMindTitle.textContent = dict.sumMindTitle || 'สภาวะจิต';
+    const sumMindNotesTitle = document.getElementById('sumMindNotesTitle');
+    if (sumMindNotesTitle) sumMindNotesTitle.textContent = dict.mindNoteTitle;
+
+    // Score labels
+    // Body posture labels
+    const sumWalkLabel = document.getElementById('sumWalkLabel');
+    if (sumWalkLabel) sumWalkLabel.textContent = dict.bodyWalk;
+    const sumStandLabel = document.getElementById('sumStandLabel');
+    if (sumStandLabel) sumStandLabel.textContent = dict.bodyStand;
+    const sumSitLabel = document.getElementById('sumSitLabel');
+    if (sumSitLabel) sumSitLabel.textContent = dict.bodySit;
+    const sumLieLabel = document.getElementById('sumLieLabel');
+    if (sumLieLabel) sumLieLabel.textContent = dict.bodyLie;
+
+    document.getElementById('sumPhySukhLabel').textContent = dict.sukh;
+    document.getElementById('sumPhyDukkhLabel').textContent = dict.dukkh;
+    document.getElementById('sumMenSukhLabel').textContent = dict.sukh;
+    document.getElementById('sumMenDukkhLabel').textContent = dict.dukkh;
+    document.getElementById('sumMenNeutralLabel').textContent = dict.neutral;
+
+    document.getElementById('sumLobhaLabel').textContent = dict.mindLobha;
+    document.getElementById('sumAlobhaLabel').textContent = dict.mindAlobha;
+    document.getElementById('sumDosaLabel').textContent = dict.mindDosa;
+    document.getElementById('sumAdosaLabel').textContent = dict.mindAdosa;
+    document.getElementById('sumMohaLabel').textContent = dict.mindMoha;
+    document.getElementById('sumAmohaLabel').textContent = dict.mindAmoha;
+
+    // Anapanasati labels
+    const sbt = document.getElementById('sumBodyBreathTitle');
+    if (sbt) sbt.textContent = dict.sumBodyBreathTitle;
+    document.getElementById('sumBreathOutLabel').textContent = dict.sumBreathOutLabel;
+    document.getElementById('sumBreathInLabel').textContent = dict.sumBreathInLabel;
+    document.getElementById('sumBreathOutLongLabel').textContent = dict.sumBreathOutLongLabel;
+    document.getElementById('sumBreathInLongLabel').textContent = dict.sumBreathInLongLabel;
+    document.getElementById('sumBreathOutShortLabel').textContent = dict.sumBreathOutShortLabel;
+    document.getElementById('sumBreathInShortLabel').textContent = dict.sumBreathInShortLabel;
+    document.getElementById('sumBreathWholeOutLabel').textContent = dict.sumBreathWholeOutLabel;
+    document.getElementById('sumBreathWholeInLabel').textContent = dict.sumBreathWholeInLabel;
+    document.getElementById('sumBreathFadeOutLabel').textContent = dict.sumBreathFadeOutLabel;
+    document.getElementById('sumBreathFadeInLabel').textContent = dict.sumBreathFadeInLabel;
+
+    // Dhamma labels
+    const sdt = document.getElementById('sumDhammaTitle');
+    if(sdt) sdt.textContent = dict.sumDhammaTitle;
+    const sil = document.getElementById('sumDhammaImpLabel');
+    if(sil) sil.textContent = dict.sumDhammaImpLabel;
+    const sfl = document.getElementById('sumDhammaFadeLabel');
+    if(sfl) sfl.textContent = dict.sumDhammaFadeLabel;
+    const scl = document.getElementById('sumDhammaCessLabel');
+    if(scl) scl.textContent = dict.sumDhammaCessLabel;
+    const srl = document.getElementById('sumDhammaRelLabel');
+    if(srl) srl.textContent = dict.sumDhammaRelLabel;
+}
+
+/**
+ * Handle sensation button clicks
+ * @param {string} group - Either 'phy' or 'men' (physical or mental)
+ * @param {string} emoType - 'sukh', 'dukkh', or 'neutral'
+ * @param {string} id - The specific html ID of the button
+ */
+function recordSensation(group, emoType, id) {
+    // 1. Increment counter
+    counts[id]++;
+
+    // 2. Update UI Counter
+    const counterEl = document.getElementById(`count-${id}`);
+    counterEl.innerText = counts[id];
+
+    // Animate counter pop
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth; // trigger reflow
+    counterEl.classList.add('pop');
+
+    // Add pop animation to button
+    const btn = document.getElementById(id);
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+}
+
+/**
+ * Handle reset button clicks
+ * @param {string} group - Either 'phy' or 'men'
+ */
+function resetGroup(group) {
+    // Reset all buttons and counters within that group
+    Object.keys(counts).forEach(key => {
+        if (key.startsWith(group)) {
+            // Reset state
+            counts[key] = 0;
+            // Update UI
+            document.getElementById(`count-${key}`).innerText = '0';
+        }
+    });
+}
+
+// ===== UNIFIED TOUCH-SAFE BUTTON HANDLER =====
+// Fixes: on mobile, touchstart fires (lit ON) but the subsequent click
+// (which triggers counting via inline onclick) can be swallowed by the
+// browser when the finger moves slightly, rapid taps occur, or due to
+// the ~300ms touch-to-click delay.
+// Solution: Invoke the counting logic directly on touchstart with
+// preventDefault(). Desktop click/onclick still works normally.
+document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.circle-btn');
+
+    buttons.forEach(btn => {
+        let litTimeout = null;
+
+        // --- TOUCH: fire counting + lit on touchstart ---
+        btn.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevent delayed click & accidental scroll-cancel
+
+            // Fire the inline onclick handler (counting logic)
+            if (typeof this.onclick === 'function') {
+                this.onclick.call(this, e);
+            }
+
+            // Lit effect ON
+            if (litTimeout) { clearTimeout(litTimeout); litTimeout = null; }
+            this.classList.add('lit');
+        });
+
+        btn.addEventListener('touchend', function() {
+            litTimeout = setTimeout(() => {
+                this.classList.remove('lit');
+                litTimeout = null;
+            }, 1000);
+        });
+
+        btn.addEventListener('touchcancel', function() {
+            litTimeout = setTimeout(() => {
+                this.classList.remove('lit');
+                litTimeout = null;
+            }, 1000);
+        });
+
+        // --- MOUSE: lit effect only (counting still via inline onclick) ---
+        btn.addEventListener('mousedown', function() {
+            if (litTimeout) { clearTimeout(litTimeout); litTimeout = null; }
+            this.classList.add('lit');
+        });
+
+        btn.addEventListener('mouseup', function() {
+            litTimeout = setTimeout(() => {
+                this.classList.remove('lit');
+                litTimeout = null;
+            }, 1000);
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            if (this.classList.contains('lit')) {
+                litTimeout = setTimeout(() => {
+                    this.classList.remove('lit');
+                    litTimeout = null;
+                }, 1000);
+            }
+        });
+    });
+
+    // --- Mind Input Buttons: touch-safe counting + lit effect ---
+    // These are wrapper divs, not .circle-btn, so handled separately.
+    const mindInputBtns = document.querySelectorAll('.mind-input-btn');
+    mindInputBtns.forEach(wrapperBtn => {
+        let litTimeout = null;
+
+        wrapperBtn.addEventListener('touchstart', function(e) {
+            // Let contenteditable field handle its own touch natively
+            const field = this.querySelector('.mind-input-field');
+            if (field && field.contains(e.target) && field.getAttribute('contenteditable') === 'true') {
+                return;
+            }
+
+            // Let clear button handle its own touch natively
+            const clearBtn = this.querySelector('.mind-input-clear');
+            if (clearBtn && clearBtn.contains(e.target)) {
+                return;
+            }
+
+            e.preventDefault();
+
+            // Fire the counting onclick
+            if (typeof this.onclick === 'function') {
+                this.onclick.call(this, e);
+            }
+
+            // Lit effect
+            if (!this.classList.contains('disabled-input')) {
+                if (litTimeout) { clearTimeout(litTimeout); litTimeout = null; }
+                this.classList.add('lit');
+                litTimeout = setTimeout(() => {
+                    this.classList.remove('lit');
+                    litTimeout = null;
+                }, 1000);
+            }
+        });
+    });
+});
+
+/**
+ * Language Switcher Logic
+ */
+const langDict = {
+    'th': {
+        flag: 'https://flagcdn.com/w40/th.png',
+        text: 'ไทย',
+        pageTitle: 'เวทนานุปัสสนาสติปัฏฐาน',
+        phyTitle: 'เวทนาทางกาย',
+        menTitle: 'เวทนาทางใจ',
+        sukh: 'สุข',
+        dukkh: 'ทุกข์',
+        neutral: 'เฉยๆ',
+        reset: 'รีเซ็ต',
+        navHome: 'หน้าแรก',
+        navBody: 'กาย',
+        navVedana: 'เวทนา',
+        navMind: 'จิต',
+        navDhamma: 'ธรรม',
+        footerLink: 'วิธีการเล่นเกมเจริญสติสังเกตเวทนา',
+        search: 'ค้นหา',
+        startBtn: 'กดเริ่มต้นวันนี้',
+        
+        // Home Navigation Cards
+        homeTitle: 'สวัสดี, อราโร',
+        homeSubtitle: 'เริ่มต้นวันใหม่ด้วยสติ',
+        homeIntroText1: 'การเจริญสติ ด้วย กาย หรือ เวทนา หรือ จิต หรือ ธรรม ไม่จำเป็นจะต้องเจริญทุกอย่าง',
+        homeIntroText2: 'การเจริญสติ จะสังเกตการเจริญสติตามจริตนิสัย ลองใช้เกมนี้เป็นเครื่องทดสอบของสติว่า ถูกจริตนิสัยกับกรรมฐานกองไหน กาย หรือ เวทนา หรือ จิต หรือ ธรรม',
+        homeFooterNoteHtml: '',
+        contactTitle: 'ติดต่อเรา',
+
+        // View Titles
+        pageTitleBody: 'กายานุปัสสนาสติปัฏฐาน',
+        pageTitleMind: 'จิตตานุปัสสนาสติปัฏฐาน',
+        devNotice: '(อยู่ระหว่างการพัฒนา)',
+
+        // Mind Page
+        mindNoteTitle: 'บันทึกสภาวะจิต',
+        mindInput1Placeholder: 'พิมพ์ความรู้สึกของคุณ...',
+        mindInput2Placeholder: 'พิมพ์ความรู้สึกเพิ่มเติม...',
+        mindLobhaTitle: 'โลภะ · อโลภะ',
+        mindDosaTitle: 'โทสะ · อโทสะ',
+        mindMohaTitle: 'โมหะ · อโมหะ',
+        mindLobha: 'จิตโลภ',
+        mindAlobha: 'จิตไม่โลภ',
+        mindDosa: 'จิตโกรธ',
+        mindAdosa: 'จิตไม่โกรธ',
+        mindMoha: 'จิตหลง',
+        mindAmoha: 'จิตไม่หลง',
+        mindFooterLink: 'วิธีการเจริญสติสังเกตจิต',
+        confirm: 'ตกลง',
+
+        // Dhamma Page
+        pageTitleDhamma: 'ธรรมานุปัสสนาสติปัฏฐาน',
+        dhammaPostureTitle: 'หมวดธรรม',
+        dhammaGuideLink: 'วิธีการเจริญสติสังเกตธรรม',
+        dhammaImp: 'ตามเห็นความไม่เที่ยง',
+        dhammaFade: 'ตามเห็นความจางคลาย',
+        dhammaCess: 'ตามเห็นความดับ',
+        dhammaRel: 'ตามเห็นความสลัดคืน',
+        dhammaResetBtn: 'รีเซ็ต',
+
+        // Summary Modal
+        summaryTitle: 'สรุปการเจริญสติ',
+        summaryTimeLabel: 'เวลาเจริญสติ',
+        summaryClose: 'ปิด',
+        sumBodyTitle: 'กาย (อิริยาบถ 4)',
+        sumBodyBreathTitle: 'อานาปานสติ',
+        sumMindTitle: 'สภาวะจิต',
+        sumDhammaTitle: 'ธรรม (ธรรมานุปัสสนา)',
+        sumDhammaImpLabel: 'ความไม่เที่ยง',
+        sumDhammaFadeLabel: 'ความจางคลาย',
+        sumDhammaCessLabel: 'ความดับ',
+        sumDhammaRelLabel: 'ความสลัดคืน',
+        sumBreathOutLabel: 'มีสติหายใจออก',
+        sumBreathInLabel: 'มีสติหายใจเข้า',
+        sumBreathOutLongLabel: 'หายใจออกยาว',
+        sumBreathInLongLabel: 'หายใจเข้ายาว',
+        sumBreathOutShortLabel: 'หายใจออกสั้น',
+        sumBreathInShortLabel: 'หายใจเข้าสั้น',
+        sumBreathWholeOutLabel: 'รู้ร่างกายทั้งตัว หายใจออก',
+        sumBreathWholeInLabel: 'รู้ร่างกายทั้งตัว หายใจเข้า',
+        sumBreathFadeOutLabel: 'ร่างกายหายใจออกสลายไป',
+        sumBreathFadeInLabel: 'ร่างกายหายใจเข้าสลายไป',
+
+        // Guide Page
+        guideBackText: 'กลับ',
+        guideMainTitle: 'เวทนานุปัสสนาสติปัฏฐาน',
+        guideMainSubtitle: 'วิธีการเจริญสติด้วยการสังเกตเวทนา',
+        guideOverviewBadge: 'ภาพรวม',
+        guideOverviewText: 'เวทนาจะมีตั้งแต่ <strong>เวทนา 2</strong> ไปจนถึง <strong>เวทนา 108</strong>',
+        guideOverviewNote: 'เวทนา 2 จะมี <em>เวทนาทางร่างกาย</em> กับ <em>เวทนาทางใจ</em>',
+        guideBodyTitleText: 'เวทนาทางร่างกาย',
+        guideBodyDesc: 'เวทนาทางร่างกาย แบ่งออกเป็น <strong>2</strong> คือ',
+        guideBodySukh: 'ความรู้สึกสุข',
+        guideBodySukhSub: '(ทางร่างกาย)',
+        guideBodyDukkh: 'ความรู้สึกทุกข์',
+        guideBodyDukkhSub: '(ทางร่างกาย)',
+        guideMindTitleText: 'เวทนาทางใจ',
+        guideMindDesc: 'เวทนาทางใจ แบ่งออกเป็น <strong>3</strong> คือ',
+        guideMindSukh: 'ความรู้สึกสุข',
+        guideMindSukhSub: '(ทางใจ)',
+        guideMindDukkh: 'ความรู้สึกทุกข์',
+        guideMindDukkhSub: '(ทางใจ)',
+        guideMindNeutral: 'ความรู้สึกเฉยๆ',
+        guideMindNeutralSub: '(ทางใจ)',
+        guidePracticeTitleText: 'วิธีเจริญสติด้วยการดูเวทนา',
+        guidePracticeBody: 'ถ้าเวทนาทางกาย (สุข, ทุกข์) ตรงส่วนไหนของกาย ก็ให้มีสติ กำหนดรู้เวทนา ไปตรงนั้น ในส่วนต่างๆ ของกาย',
+        guidePracticeMind: 'ถ้ามีความรู้สึก (สุข, ทุกข์ หรือ เฉยๆ) ทางใจ ก็ให้มีสติ กำหนดรู้ เวทนาทางใจ ไป ณ ขณะนั้น',
+        guidePracticeInsight: 'แต่เวทนาทางใจ จะเกิดได้ทีละอย่าง เช่น ขณะที่มีความสุขใจอยู่ ในขณะนั้น ความทุกข์ และ ความเฉยๆ ทางใจจะไม่มี ให้มีสติกำหนดรู้ เวทนาทางใจ',
+        guideObserveTitleText: 'ลองสังเกต ณ ขณะนี้',
+        guideObserveText: 'ความรู้สึกทางใจเป็นแบบไหน?',
+        guideObserveSukh: 'ขณะนี้ จิตใจมีความสุข',
+        guideObserveDukkh: 'หรือ มีความทุกข์',
+        guideObserveNeutral: 'หรือ เฉยๆ',
+        guideObserveConclusion: 'ให้มีสติ รู้เท่าทันเวทนา',
+        guideSensesBadge: 'หรือ…',
+        guideSenseEye: 'ในขณะที่.. <strong>ตา</strong> มองเห็น <strong>รูป</strong>',
+        guideSenseEyeVedana: 'จิตใจ มี(ความสุข ทุกข์ หรือ เฉยๆ) ให้มีสติ รู้ทัน',
+        guideSenseEar: 'ในขณะที่.. <strong>หู</strong> ได้ยิน <strong>เสียง</strong>',
+        guideSenseEarVedana: 'จิตใจ มี(ความสุข ทุกข์ หรือ เฉยๆ) ให้มีสติ รู้ทัน',
+        guideSenseThink: 'ในขณะที่ มี<strong>ความคิด</strong> เกิดขึ้น',
+        guideSenseThinkVedana: 'จิตใจ มี(ความสุข ทุกข์ หรือ เฉยๆ) ให้มีสติ รู้ทัน',
+        guideVedana5Desc: 'แล้วให้สังเกตเห็นว่า..',
+        guideV5BodyLabel: 'เวทนา 2 ทางร่างกาย',
+        guideV5MindLabel: 'เวทนา 3 ทางใจ',
+        guideV5SepText: 'แยกออกจากกัน คนละส่วนกัน',
+        guideVedana5Conclusion: 'ก็จะเรียกว่า <strong>เวทนา 5</strong>',
+        guideLiberationText: 'เกมส์เจริญสตินี้ ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น เพราะขณะที่กดปุ่ม มีการนับจำนวนเวทนาแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ เท่ากับจำนวนที่กดปุ่มลงไปนั้น',
+
+        // Body Page
+        bodyPostureTitle: 'อิริยาบถ 4',
+        bodyWalk: 'เดิน',
+        bodyStand: 'ยืน',
+        bodySit: 'นั่ง',
+        bodyLie: 'นอน',
+        bodyWalkText: 'เมื่อร่างกายเดินอยู่ ก็รู้ชัดว่าร่างกายเดินอยู่',
+        bodyStandText: 'เมื่อร่างกายยืนอยู่ ก็รู้ชัดว่าร่างกายยืนอยู่',
+        bodySitText: 'เมื่อร่างกายนั่งอยู่ ก็รู้ชัดว่าร่างกายนั่งอยู่',
+        bodyLieText: 'เมื่อร่างกายนอนอยู่ ก็รู้ชัดว่าร่างกายนอนอยู่',
+        bodyFooterWisdom: 'หรือตั้งกายไว้ด้วยอาการอย่างใดๆ ก็รู้ชัดอาการอย่างนั้น',
+        bodyGuideLink: 'วิธีการเจริญสติสังเกตกาย',
+
+        // Anapanasati
+        bodyBreathTitle: 'อานาปานสติ',
+        tabBodyPosture: 'อิริยาบถ 4',
+        tabBodyBreath: 'อานาปานสติ',
+        bodyBreathOut: 'มีสติหายใจออก',
+        bodyBreathIn: 'มีสติหายใจเข้า',
+        bodyBreathOutLong: 'เมื่อหายใจออกยาว ก็รู้ชัดว่า หายใจออกยาว',
+        bodyBreathInLong: 'เมื่อหายใจเข้ายาว ก็รู้ชัดว่า หายใจเข้ายาว',
+        bodyBreathOutShort: 'เมื่อหายใจออกสั้น ก็รู้ชัดว่า หายใจออกสั้น',
+        bodyBreathInShort: 'เมื่อหายใจเข้าสั้น ก็รู้ชัดว่า หายใจเข้าสั้น',
+        bodyBreathWholeOut: 'มีสติ รู้ร่างกายทั้งตัว หายใจออก',
+        bodyBreathWholeIn: 'มีสติ รู้ร่างกายทั้งตัว หายใจเข้า',
+        bodyBreathFadeOut: 'เห็นร่างกายที่หายใจออก สลายไป , ดับไป มีแต่ร่างกายที่หายใจเข้า',
+        bodyBreathFadeIn: 'เห็นร่างกายที่หายใจเข้า สลายไป , ดับไป มีแต่ร่างกายที่หายใจออก',
+        bodyBreathResetBtn: 'รีเซ็ต',
+
+        // Body Guide Page
+        bodyGuideBackText: 'กลับ',
+        bodyGuideMainTitle: 'กายานุปัสสนาสติปัฏฐาน',
+        bodyGuideMainSubtitle: 'วิธีการเจริญสติสังเกตกาย',
+        bodyGuideOverviewBadge: 'ภาพรวม',
+        bodyGuideOverviewText: 'วิธีการเจริญสติสังเกตในหมวดกายนี้ สามารถมีสติระลึกรู้กายได้หลายอย่าง หลายกรรมฐาน ในเบื้องต้นจะขอยกตัวอย่าง การเจริญสติด้วยกายในหมวด อริยาบท 4 คือ',
+        bodyGuideWalkTitleText: 'เดิน',
+        bodyGuideWalkDesc: 'เมื่อร่างกาย เดิน ก็มีสติรู้ชัด เห็นร่างกายเดิน (เห็นร่างกาย เหมือนเห็นคนอื่น)',
+        bodyGuideStandTitleText: 'ยืน',
+        bodyGuideStandDesc: 'เมื่อร่างกาย ยืน ก็มีสติรู้ชัด เห็นร่างกายยืน (เห็นร่างกาย เหมือนเห็นคนอื่น)',
+        bodyGuideSitTitleText: 'นั่ง',
+        bodyGuideSitDesc: 'เมื่อร่างกาย นั่ง ก็มีสติรู้ชัด เห็นร่างกายนั่ง (เห็นร่างกาย เหมือนเห็นคนอื่น)',
+        bodyGuideLieTitleText: 'นอน',
+        bodyGuideLieDesc: 'เมื่อร่างกาย นอน ก็มีสติรู้ชัด เห็นร่างกายนอน (เห็นร่างกาย เหมือนเห็นคนอื่น)',
+        bodyGuideOtherTitleText: 'อาการอื่นๆ',
+        bodyGuideOtherDesc: 'หรือตั้งกายไว้ด้วยอาการอย่างใดๆ ก็รู้ชัดอาการอย่างนั้น (เห็นร่างกาย เหมือนเห็นคนอื่น)',
+        bodyGuideFinalText: 'เกมส์เจริญสตินี้ ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น เพราะขณะที่กดปุ่ม มีการนับจำนวนอริยาบทกายแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ เท่ากับจำนวนที่กดปุ่มลงไปนั้น',
+
+        // Mind Guide Page
+        mindGuideBackText: 'กลับ',
+        mindGuideMainTitle: 'จิตตานุปัสสนาสติปัฏฐาน',
+        mindGuideMainSubtitle: 'วิธีการเจริญสติสังเกตจิต',
+        mindGuideOverviewBadge: 'ภาพรวม',
+        mindGuideOverviewText: 'การดูจิต ท่านสอนให้ดูจิตเป็นคู่ๆ ให้รู้ถึงความมีอยู่และความไม่มีอยู่ของจิตชนิดนั้นๆ เพื่อให้เห็นถึงความไม่เที่ยงแท้แน่นอนของจิตชนิดนั้นๆ',
+        mindGuideImpermanenceTitleText: 'ความไม่เที่ยงของจิต',
+        mindGuideImpermanenceDesc: 'ถ้าสิ่งนั้นเที่ยงแท้แน่นอนจริง สิ่งนั้นจะต้องแน่ สิ่งนั้นจะต้องหนึ่ง สิ่งนั้นจะต้องไม่เปลี่ยนแปลง ก็ในเมื่อสิ่งนั้นเป็นสอง ไม่เที่ยง เปลี่ยนแปลง สิ่งนั้น จะเที่ยงแท้แน่นอนได้อย่างไร เมื่อสิ่งนั้นไม่เที่ยงแท้แน่นอน ควรหรือที่จะเข้าไปยึดมั่นถือมั่นสิ่งนั้นว่า สิ่งนั้นเป็นตัวเราเป็นของเรา',
+        mindGuidePracticeTitleText: 'วิธีปฏิบัติ',
+        mindGuidePracticeDesc: 'ให้จับคู่จิตเป็นคู่ๆ แล้วพิมพ์ลงไปในช่องบันทึกสภาวะจิตก็ได้เช่น (จิตหงุดหงิด , จิตไม่หงุดหงิด) แล้วสังเกตถึงความมีอยู่ และความไม่มีอยู่ของจิตอยู่อย่างนั้น ทั้งวัน ทั้งคืน ยืน เดิน นั่ง นอน ฯลฯ แล้วจะเห็นความไม่เที่ยงแท้แน่นอนของจิต',
+        mindGuideFinalText: 'เกมส์เจริญสตินี้ ก็เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น เพราะขณะที่กดปุ่ม มีการนับจำนวนจิตแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ เท่ากับจำนวนที่กดปุ่มลงไปนั้น',
+
+        // Dhamma Guide Page
+        dhammaGuideBackText: 'กลับ',
+        dhammaGuideMainTitle: 'ธรรมานุปัสสนาสติปัฏฐาน',
+        dhammaGuideMainSubtitle: 'วิธีการเจริญสติสังเกตธรรม',
+        dhammaGuideOverviewBadge: 'ภาพรวม',
+        dhammaGuideOverviewText: 'ในหมวด"ธรรม" หรือ "ธรรมมานุปัสสนา" 4 ข้อหลังนี้ ไม่จำเป็นจะต้องเห็นทั้งหมด เห็นแค่ข้อใดข้อนึงตามจริตนิสัย ตามกรรมฐาน ก็เรียกว่าเห็นในหมวดธรรมแล้ว เพราะในหมวดธรรมทั้งหมด จัดเข้าไตรลักษณ์ทั้งหมด',
+        dhammaGuideVipassanaTitle: 'วิปัสสนาและพหุลีกตาธรรม',
+        dhammaGuideVipassanaText: 'และการเห็น กาย เวทนา จิต ธรรม เป็นวิปัสสนา ยังเห็นแค่ครั้งเดียวไม่พอ เพราะยังเป็น "พหุลีกตาธรรม" คือ จะต้องเห็นให้มาก เห็นให้เป็นความเคยชิน เห็นให้เป็นจริตนิสัย',
+        dhammaGuidePracticeTitle: 'ความหมาย',
+        dhammaGuideMeaningIntro: 'คำว่า…ตามเห็นความไม่เที่ยงของธรรม ณ ที่นี้ หมายถึง',
+        dhammaGuideImpText: '<strong>อนิจจานุปัสสนา:</strong> ตามเห็นความไม่เที่ยงของกรรมฐานนั้นๆ ตามเห็นความไม่เที่ยงของ กาย เวทนา จิต ธรรม นี้เรียกว่า "อนิจจานุปัสสนา"',
+        dhammaGuideFadeText: '<strong>วิราคานุปัสสนา:</strong> ตามเห็นความสลายไป , ความจางคลายไป ของกรรมฐานนั้นๆ ตามเห็นความสลายไป , ความจางคลายไปของ กาย เวทนา จิต ธรรม นี้เรียกว่า "วิราคานุปัสสนา"',
+        dhammaGuideCessText: '<strong>นิโรธานุปัสสนา:</strong> ตามเห็นความดับไป ของกรรมฐานนั้นๆ ตามเห็นความดับไปของ กาย เวทนา จิต ธรรม นี้เรียกว่า "นิโรธานุปัสสนา"',
+        dhammaGuideRelText: '<strong>ปฏินิสสัคคานุปัสสนา:</strong> ตามเห็นความสลัดคืนไปของกรรมฐานนั้นๆ ตามเห็นความสลัดคืนไปของ กาย เวทนา จิต ธรรม นี้เรียกว่า "ปฏินิสสัคคานุปัสสนา"',
+        dhammaGuideConclusion: 'เหล่านี้เรียกว่า หมวดธรรม.',
+        dhammaGuideFinalText: 'เกมส์เจริญสตินี้ เปรียบเสมือนเครื่องมือที่ช่วยในการเจริญสติ ช่วยให้มีการระลึกถึงสติ ในเบื้องต้น เพราะขณะที่กดปุ่ม มีการนับจำนวนแต่ละครั้ง นั้นก็เท่ากับว่า ขณะนั้นมีสติ เท่ากับจำนวนที่กดปุ่มลงไปนั้น'
+    },
+    'en': {
+        flag: 'https://flagcdn.com/w40/us.png',
+        text: 'ENG',
+        pageTitle: 'Vedananupassana Satipatthana',
+        phyTitle: 'Physical Sensation',
+        menTitle: 'Mental Sensation',
+        sukh: 'Happy',
+        dukkh: 'Suffering',
+        neutral: 'Neutral',
+        reset: 'Reset',
+        navHome: 'Home',
+        navBody: 'Body',
+        navVedana: 'Vedana',
+        navMind: 'Mind',
+        navDhamma: 'Dhamma',
+        footerLink: 'How to play the mindfulness game of observing feelings',
+        search: 'Search',
+        startBtn: 'Press Start Today',
+        
+        // Home Navigation Cards
+        homeTitle: 'Hello, Araro',
+        homeSubtitle: 'Start your day with mindfulness',
+        homeIntroText1: 'Practicing mindfulness through Body, Vedana, Mind, or Dhamma does not require practicing everything.',
+        homeIntroText2: 'Mindfulness practice observes one\'s own temperament. Try using this game as a test to see which meditation object suits your nature—Body, Vedana, Mind, or Dhamma.',
+        homeFooterNoteHtml: '',
+        contactTitle: 'Contact Us',
+
+        // View Titles
+        pageTitleBody: 'Kayanupassana Satipatthana',
+        pageTitleMind: 'Cittanupassana Satipatthana',
+        devNotice: '(Under Development)',
+
+        // Anapanasati
+        bodyBreathTitle: 'Anapanasati',
+        tabBodyPosture: '4 Postures',
+        tabBodyBreath: 'Anapanasati',
+        bodyBreathOut: 'Mindful breathing out',
+        bodyBreathIn: 'Mindful breathing in',
+        bodyBreathOutLong: 'When breathing out long, knowing one is breathing out long',
+        bodyBreathInLong: 'When breathing in long, knowing one is breathing in long',
+        bodyBreathOutShort: 'When breathing out short, knowing one is breathing out short',
+        bodyBreathInShort: 'When breathing in short, knowing one is breathing in short',
+        bodyBreathWholeOut: 'Mindfully experiencing the whole body breathing out',
+        bodyBreathWholeIn: 'Mindfully experiencing the whole body breathing in',
+        bodyBreathFadeOut: 'Experiencing the exhaling body fading/ceasing, leaving only the inhaling body',
+        bodyBreathFadeIn: 'Experiencing the inhaling body fading/ceasing, leaving only the exhaling body',
+        bodyBreathResetBtn: 'Reset',
+
+        // Mind Page
+        mindNoteTitle: 'Record Mind State',
+        mindInput1Placeholder: 'Type your feelings...',
+        mindInput2Placeholder: 'Type additional feelings...',
+        mindLobhaTitle: 'Greed · Non-Greed',
+        mindDosaTitle: 'Anger · Non-Anger',
+        mindMohaTitle: 'Delusion · Non-Delusion',
+        mindLobha: 'Greedy',
+        mindAlobha: 'Not Greedy',
+        mindDosa: 'Angry',
+        mindAdosa: 'Not Angry',
+        mindMoha: 'Deluded',
+        mindAmoha: 'Not Deluded',
+        mindFooterLink: 'How to practice mindfulness by observing the mind',
+        confirm: 'OK',
+
+        // Dhamma Page
+        pageTitleDhamma: 'Dhammanupassana Satipatthana',
+        dhammaPostureTitle: 'Mindfulness of Dhamma',
+        dhammaGuideLink: 'How to practice mindfulness by observing Dhamma',
+        dhammaImp: 'Observing Impermanence',
+        dhammaFade: 'Observing Fading Away',
+        dhammaCess: 'Observing Cessation',
+        dhammaRel: 'Observing Relinquishment',
+        dhammaResetBtn: 'Reset',
+
+        // Summary Modal
+        summaryTitle: 'Mindfulness Summary',
+        summaryTimeLabel: 'Meditation Time',
+        summaryClose: 'Close',
+        sumBodyTitle: 'Body (4 Postures)',
+        sumBodyBreathTitle: 'Anapanasati',
+        sumMindTitle: 'Mind States',
+        sumDhammaTitle: 'Dhamma',
+        sumDhammaImpLabel: 'Impermanence',
+        sumDhammaFadeLabel: 'Fading Away',
+        sumDhammaCessLabel: 'Cessation',
+        sumDhammaRelLabel: 'Relinquishment',
+        sumBreathOutLabel: 'Mindful breathing out',
+        sumBreathInLabel: 'Mindful breathing in',
+        sumBreathOutLongLabel: 'Breathing out long',
+        sumBreathInLongLabel: 'Breathing in long',
+        sumBreathOutShortLabel: 'Breathing out short',
+        sumBreathInShortLabel: 'Breathing in short',
+        sumBreathWholeOutLabel: 'Whole body breathing out',
+        sumBreathWholeInLabel: 'Whole body breathing in',
+        sumBreathFadeOutLabel: 'Exhaling body fading away',
+        sumBreathFadeInLabel: 'Inhaling body fading away',
+
+        // Guide Page
+        guideBackText: 'Back',
+        guideMainTitle: 'Vedananupassana Satipatthana',
+        guideMainSubtitle: 'How to practice mindfulness by observing feelings',
+        guideOverviewBadge: 'OVERVIEW',
+        guideOverviewText: 'Vedana (feelings) range from <strong>Vedana 2</strong> up to <strong>Vedana 108</strong>',
+        guideOverviewNote: 'Vedana 2 consists of <em>Physical Vedana</em> and <em>Mental Vedana</em>',
+        guideBodyTitleText: 'Physical Vedana',
+        guideBodyDesc: 'Physical Vedana is divided into <strong>2</strong> types:',
+        guideBodySukh: 'Pleasant feeling',
+        guideBodySukhSub: '(Physical)',
+        guideBodyDukkh: 'Unpleasant feeling',
+        guideBodyDukkhSub: '(Physical)',
+        guideMindTitleText: 'Mental Vedana',
+        guideMindDesc: 'Mental Vedana is divided into <strong>3</strong> types:',
+        guideMindSukh: 'Pleasant feeling',
+        guideMindSukhSub: '(Mental)',
+        guideMindDukkh: 'Unpleasant feeling',
+        guideMindDukkhSub: '(Mental)',
+        guideMindNeutral: 'Neutral feeling',
+        guideMindNeutralSub: '(Mental)',
+        guidePracticeTitleText: 'How to practice mindfulness through Vedana',
+        guidePracticeBody: 'If there is physical vedana (pleasant or unpleasant) in any part of the body, be mindful and note that vedana in that particular part of the body.',
+        guidePracticeMind: 'If there is a feeling (pleasant, unpleasant, or neutral) in the mind, be mindful and note the mental vedana at that moment.',
+        guidePracticeInsight: 'Mental vedana can only arise one at a time. For example, when there is happiness in the mind, suffering and neutrality are absent. Be mindful and note the mental vedana.',
+        guideObserveTitleText: 'Try observing right now',
+        guideObserveText: 'What kind of mental feeling do you have?',
+        guideObserveSukh: 'Right now, the mind feels happy',
+        guideObserveDukkh: 'Or feels suffering',
+        guideObserveNeutral: 'Or feels neutral',
+        guideObserveConclusion: 'Be mindful, aware of vedana',
+        guideSensesBadge: 'Or…',
+        guideSenseEye: 'When the <strong>eyes</strong> see a <strong>form</strong>',
+        guideSenseEyeVedana: 'The mind feels (happy, suffering, or neutral) — be mindful and aware',
+        guideSenseEar: 'When the <strong>ears</strong> hear a <strong>sound</strong>',
+        guideSenseEarVedana: 'The mind feels (happy, suffering, or neutral) — be mindful and aware',
+        guideSenseThink: 'When a <strong>thought</strong> arises',
+        guideSenseThinkVedana: 'The mind feels (happy, suffering, or neutral) — be mindful and aware',
+        guideVedana5Desc: 'Then observe that...',
+        guideV5BodyLabel: 'Vedana 2 (Physical)',
+        guideV5MindLabel: 'Vedana 3 (Mental)',
+        guideV5SepText: 'Are separate from each other',
+        guideVedana5Conclusion: 'This is called <strong>Vedana 5</strong>',
+        guideLiberationText: 'This mindfulness game is like a tool that helps in practicing mindfulness, helping to remember sati in the beginning. Because every time you press the button and count each vedana, it means that at that moment you have mindfulness — equal to the number of times you pressed the button.',
+
+        // Body Page
+        bodyPostureTitle: 'The 4 Postures',
+        bodyWalk: 'Walk',
+        bodyStand: 'Stand',
+        bodySit: 'Sit',
+        bodyLie: 'Lie Down',
+        bodyWalkText: 'When the body is walking, one knows clearly that the body is walking.',
+        bodyStandText: 'When the body is standing, one knows clearly that the body is standing.',
+        bodySitText: 'When the body is sitting, one knows clearly that the body is sitting.',
+        bodyLieText: 'When the body is lying down, one knows clearly that the body is lying down.',
+        bodyFooterWisdom: 'Or in whatever posture the body is placed, one knows that posture clearly.',
+        bodyGuideLink: 'How to practice mindfulness by observing the body',
+
+        // Body Guide Page
+        bodyGuideBackText: 'Back',
+        bodyGuideMainTitle: 'Kayanupassana Satipatthana',
+        bodyGuideMainSubtitle: 'How to practice mindfulness by observing the body',
+        bodyGuideOverviewBadge: 'OVERVIEW',
+        bodyGuideOverviewText: 'The method of practicing mindfulness in the body section can involve being mindful of the body in many ways, through many meditation subjects. As a starting point, here is an example of body mindfulness through the 4 Postures:',
+        bodyGuideWalkTitleText: 'Walking',
+        bodyGuideWalkDesc: 'When the body is walking, one is clearly aware, seeing the body walking (seeing the body as if seeing another person)',
+        bodyGuideStandTitleText: 'Standing',
+        bodyGuideStandDesc: 'When the body is standing, one is clearly aware, seeing the body standing (seeing the body as if seeing another person)',
+        bodyGuideSitTitleText: 'Sitting',
+        bodyGuideSitDesc: 'When the body is sitting, one is clearly aware, seeing the body sitting (seeing the body as if seeing another person)',
+        bodyGuideLieTitleText: 'Lying Down',
+        bodyGuideLieDesc: 'When the body is lying down, one is clearly aware, seeing the body lying down (seeing the body as if seeing another person)',
+        bodyGuideOtherTitleText: 'Other Postures',
+        bodyGuideOtherDesc: 'Or in whatever posture the body is placed, one knows that posture clearly (seeing the body as if seeing another person)',
+        bodyGuideFinalText: 'This mindfulness game is like a tool that helps in practicing mindfulness, helping to remember sati in the beginning. Because every time you press the button and count each body posture, it means that at that moment you have mindfulness — equal to the number of times you pressed the button.',
+
+        // Mind Guide Page
+        mindGuideBackText: 'Back',
+        mindGuideMainTitle: 'Cittanupassana Satipatthana',
+        mindGuideMainSubtitle: 'How to practice mindfulness by observing the mind',
+        mindGuideOverviewBadge: 'OVERVIEW',
+        mindGuideOverviewText: 'The practice of observing the mind involves watching the mind in pairs — recognizing the presence and absence of each type of mind state, in order to see the impermanence of that mind state.',
+        mindGuideImpermanenceTitleText: 'Impermanence of the mind',
+        mindGuideImpermanenceDesc: 'If something were truly permanent, it would have to be certain, it would have to be one, it would have to be unchanging. Since it comes in pairs, is impermanent, and changes, how can it be truly permanent? When it is not truly permanent, should we cling to it and consider it as our self or belonging to us?',
+        mindGuidePracticeTitleText: 'How to practice',
+        mindGuidePracticeDesc: 'Pair up mind states and type them into the mind state note field, for example (irritated mind, non-irritated mind). Then observe the presence and absence of that mind state throughout the day and night — standing, walking, sitting, lying down — and you will see the impermanence of the mind.',
+        mindGuideFinalText: 'This mindfulness game is like a tool that helps in practicing mindfulness, helping to remember sati in the beginning. Because every time you press the button and count each mind state, it means that at that moment you have mindfulness — equal to the number of times you pressed the button.',
+
+        // Dhamma Guide Page
+        dhammaGuideBackText: 'Back',
+        dhammaGuideMainTitle: 'Dhammanupassana Satipatthana',
+        dhammaGuideMainSubtitle: 'How to practice mindfulness by observing Dhamma',
+        dhammaGuideOverviewBadge: 'OVERVIEW',
+        dhammaGuideOverviewText: 'In the "Dhamma" or "Dhammanupassana" section, these latter 4 aspects do not necessarily need to be observed all together. Observing just one of them according to your temperament and meditation practice is sufficient to be considered "observing Dhamma". This is because all categories in the Dhamma section fall under the Three Marks of Existence.',
+        dhammaGuideVipassanaTitle: 'Vipassana and Bahulikata Dhamma',
+        dhammaGuideVipassanaText: 'Furthermore, observing Body, Vedana, Mind, and Dhamma as Vipassana is not enough if done only once. It must be cultivated as "Bahulīkatā-Dhamma," meaning it must be practiced repeatedly until it becomes a habit and your natural disposition.',
+        dhammaGuidePracticeTitle: 'Meaning',
+        dhammaGuideMeaningIntro: 'The phrase "observing the impermanence of Dhamma" here refers to:',
+        dhammaGuideImpText: '<strong>Aniccānupassanā:</strong> Observing the impermanence of a meditation object. Observing the impermanence of Body, Vedana, Mind, and Dhamma. This is called "Aniccānupassanā" (Contemplation of impermanence).',
+        dhammaGuideFadeText: '<strong>Virāgānupassanā:</strong> Observing the fading away, the diminishing of a meditation object. Observing the fading away of Body, Vedana, Mind, and Dhamma. This is called "Virāgānupassanā" (Contemplation of fading away).',
+        dhammaGuideCessText: '<strong>Nirodhānupassanā:</strong> Observing the cessation of a meditation object. Observing the cessation of Body, Vedana, Mind, and Dhamma. This is called "Nirodhānupassanā" (Contemplation of cessation).',
+        dhammaGuideRelText: '<strong>Paṭinissaggānupassanā:</strong> Observing the relinquishment of a meditation object. Observing the relinquishment of Body, Vedana, Mind, and Dhamma. This is called "Paṭinissaggānupassanā" (Contemplation of relinquishment).',
+        dhammaGuideConclusion: 'These are collectively called the Dhamma Section.',
+        dhammaGuideFinalText: 'This mindfulness game is like a tool that helps in practicing mindfulness, helping to remember sati initially. Because every time you press the button and count each time, it means that at that moment you have mindfulness — equal to the number of times you pressed the button.'
+    }
+};
+
+function updateLanguageUI() {
+    const dict = langDict[currentLang];
+
+    // Update Switcher Button
+    const flagImg = document.getElementById('langFlag');
+    const langTxt = document.getElementById('langText');
+    if (flagImg) flagImg.src = dict.flag;
+    if (langTxt) langTxt.innerText = dict.text;
+
+    // Update Global Titles
+    const pageTitle = document.getElementById('pageTitle');
+    if (pageTitle) pageTitle.innerText = dict.pageTitle;
+    const phyTitle = document.getElementById('phyTitle');
+    if (phyTitle) phyTitle.innerText = dict.phyTitle;
+    const menTitle = document.getElementById('menTitle');
+    if (menTitle) menTitle.innerText = dict.menTitle;
+
+    // Update Nav
+    const nHome = document.getElementById('navHome');
+    if(nHome) nHome.innerText = dict.navHome;
+    const nBody = document.getElementById('navBody');
+    if(nBody) nBody.innerText = dict.navBody;
+    const nVedana = document.getElementById('navVedana');
+    if(nVedana) nVedana.innerText = dict.navVedana;
+    const nMind = document.getElementById('navMind');
+    if(nMind) nMind.innerText = dict.navMind;
+
+    // Update Home Section
+    const homeTitleEl = document.getElementById('homeTitle');
+    if(homeTitleEl) homeTitleEl.innerText = dict.homeTitle;
+    const homeSubEl = document.getElementById('homeSubtitle');
+    if(homeSubEl) homeSubEl.innerText = dict.homeSubtitle;
+    const homeIntro1 = document.getElementById('homeIntroText1');
+    if(homeIntro1) homeIntro1.innerText = dict.homeIntroText1;
+    const homeIntro2 = document.getElementById('homeIntroText2');
+    if(homeIntro2) homeIntro2.innerText = dict.homeIntroText2;
+    const homeFooterNote = document.getElementById('homeFooterNote');
+    if(homeFooterNote) homeFooterNote.innerHTML = dict.homeFooterNoteHtml;
+    const startBtn = document.getElementById('startBtn');
+    if(startBtn) startBtn.innerText = dict.startBtn;
+    const searchText = document.getElementById('searchText');
+    if(searchText) searchText.innerText = dict.search;
+    
+    
+    // Update Home Cards Titles
+    const cardBodyT = document.getElementById('cardBodyTitle');
+    if(cardBodyT) cardBodyT.innerText = dict.navBody;
+
+    const cardVedanaT = document.getElementById('cardVedanaTitle');
+    if(cardVedanaT) cardVedanaT.innerText = dict.navVedana;
+
+    const cardMindT = document.getElementById('cardMindTitle');
+    if(cardMindT) cardMindT.innerText = dict.navMind;
+
+    // Card descriptions removed - icons only design
+
+    const contactEl = document.getElementById('contactTitle');
+    if(contactEl) contactEl.innerText = dict.contactTitle;
+
+    // Update specific pages
+    const ptb = document.getElementById('pageTitleBody');
+    if(ptb) ptb.innerText = dict.pageTitleBody;
+    const ptm = document.getElementById('pageTitleMind');
+    if(ptm) ptm.innerText = dict.pageTitleMind;
+    const ptd = document.getElementById('pageTitleDhamma');
+    if(ptd) ptd.innerText = dict.pageTitleDhamma;
+
+    // Update Dhamma Posture Title
+    const dpt = document.getElementById('dhammaPostureTitle');
+    if(dpt) dpt.innerText = dict.dhammaPostureTitle;
+
+    // Update Dhamma Buttons
+    const dimp = document.getElementById('dhamma-impermanence');
+    if(dimp) dimp.innerText = dict.dhammaImp;
+    const dfade = document.getElementById('dhamma-fading');
+    if(dfade) dfade.innerText = dict.dhammaFade;
+    const dcess = document.getElementById('dhamma-cessation');
+    if(dcess) dcess.innerText = dict.dhammaCess;
+    const drel = document.getElementById('dhamma-relinquishment');
+    if(drel) drel.innerText = dict.dhammaRel;
+
+    // Dhamma Guide Link
+    const dgl = document.getElementById('dhammaGuideLink');
+    if(dgl) dgl.innerText = dict.dhammaGuideLink;
+
+    // Dhamma Reset Button
+    const drb = document.getElementById('dhammaResetBtn');
+    if(drb) drb.innerText = dict.dhammaResetBtn;
+
+    // Reset buttons
+    document.querySelectorAll('.reset-btn').forEach(btn => {
+        if (btn.id === 'dhammaResetBtn') return; // already handled
+        btn.innerText = dict.reset;
+    });
+
+    // Summary Dhamma titles
+    const sdt = document.getElementById('sumDhammaTitle');
+    if(sdt) sdt.textContent = dict.sumDhammaTitle;
+    const sil = document.getElementById('sumDhammaImpLabel');
+    if(sil) sil.textContent = dict.sumDhammaImpLabel;
+    const sfl = document.getElementById('sumDhammaFadeLabel');
+    if(sfl) sfl.textContent = dict.sumDhammaFadeLabel;
+    const scl = document.getElementById('sumDhammaCessLabel');
+    if(scl) scl.textContent = dict.sumDhammaCessLabel;
+    const srl = document.getElementById('sumDhammaRelLabel');
+    if(srl) srl.textContent = dict.sumDhammaRelLabel;
+    
+    document.querySelectorAll('.text-red').forEach(el => {
+        if(el.innerText.includes('พัฒนา') || el.innerText.includes('Development')){
+            el.innerText = dict.devNotice;
+        }
+    });
+
+    // Update Buttons
+    document.querySelectorAll('.btn-sukh').forEach(el => el.innerText = dict.sukh);
+    document.querySelectorAll('.btn-dukkh').forEach(el => el.innerText = dict.dukkh);
+    document.querySelectorAll('.btn-neutral').forEach(el => el.innerText = dict.neutral);
+    document.querySelectorAll('.reset-btn').forEach(el => el.innerText = dict.reset);
+    document.querySelectorAll('.confirm-btn').forEach(el => el.innerText = dict.confirm);
+
+    // Update Vedana Footer Link
+    const footerLink = document.querySelector('#view-vedana .footer-link');
+    if (footerLink) {
+        footerLink.innerText = dict.footerLink;
+    }
+
+    // ===== Update Body Page =====
+    // ===== Update Body Page =====
+    const bodyPostureTitle = document.getElementById('bodyPostureTitle');
+    if(bodyPostureTitle) bodyPostureTitle.innerText = dict.bodyPostureTitle;
+    const bodyWalkBtn = document.getElementById('body-walk');
+    if(bodyWalkBtn) bodyWalkBtn.innerText = dict.bodyWalk;
+    const bodyStandBtn = document.getElementById('body-stand');
+    if(bodyStandBtn) bodyStandBtn.innerText = dict.bodyStand;
+    const bodySitBtn = document.getElementById('body-sit');
+    if(bodySitBtn) bodySitBtn.innerText = dict.bodySit;
+    const bodyLieBtn = document.getElementById('body-lie');
+    if(bodyLieBtn) bodyLieBtn.innerText = dict.bodyLie;
+    const bodyWalkText = document.getElementById('bodyWalkText');
+    if(bodyWalkText) bodyWalkText.innerText = dict.bodyWalkText;
+    const bodyStandText = document.getElementById('bodyStandText');
+    if(bodyStandText) bodyStandText.innerText = dict.bodyStandText;
+    const bodySitText = document.getElementById('bodySitText');
+    if(bodySitText) bodySitText.innerText = dict.bodySitText;
+    const bodyLieText = document.getElementById('bodyLieText');
+    if(bodyLieText) bodyLieText.innerText = dict.bodyLieText;
+    const bodyFooterWisdom = document.getElementById('bodyFooterWisdom');
+    if(bodyFooterWisdom) bodyFooterWisdom.innerText = dict.bodyFooterWisdom;
+
+    // Update Anapanasati Elements
+    const bodyBreathTitle = document.getElementById('bodyBreathTitle');
+    if (bodyBreathTitle) bodyBreathTitle.innerText = dict.bodyBreathTitle;
+    const tabBodyPosture = document.getElementById('tabBodyPosture');
+    if (tabBodyPosture) tabBodyPosture.innerText = dict.tabBodyPosture;
+    const tabBodyBreath = document.getElementById('tabBodyBreath');
+    if (tabBodyBreath) tabBodyBreath.innerText = dict.tabBodyBreath;
+    
+    document.getElementById('body-breath-out').innerText = dict.bodyBreathOut;
+    document.getElementById('body-breath-in').innerText = dict.bodyBreathIn;
+    document.getElementById('body-breath-out-long').innerText = dict.bodyBreathOutLong;
+    document.getElementById('body-breath-in-long').innerText = dict.bodyBreathInLong;
+    document.getElementById('body-breath-out-short').innerText = dict.bodyBreathOutShort;
+    document.getElementById('body-breath-in-short').innerText = dict.bodyBreathInShort;
+    document.getElementById('body-breath-whole-out').innerText = dict.bodyBreathWholeOut;
+    document.getElementById('body-breath-whole-in').innerText = dict.bodyBreathWholeIn;
+    document.getElementById('body-breath-fade-out').innerText = dict.bodyBreathFadeOut;
+    document.getElementById('body-breath-fade-in').innerText = dict.bodyBreathFadeIn;
+
+    // Body Guide Link
+    const bodyGuideLink = document.getElementById('bodyGuideLink');
+    if(bodyGuideLink) bodyGuideLink.innerText = dict.bodyGuideLink;
+
+    // ===== Update Mind Page =====
+    const mindNoteTitle = document.getElementById('mindNoteTitle');
+    if(mindNoteTitle) mindNoteTitle.innerText = dict.mindNoteTitle;
+
+    const mindLobhaTitle = document.getElementById('mindLobhaTitle');
+    if(mindLobhaTitle) mindLobhaTitle.innerText = dict.mindLobhaTitle;
+    const mindDosaTitle = document.getElementById('mindDosaTitle');
+    if(mindDosaTitle) mindDosaTitle.innerText = dict.mindDosaTitle;
+    const mindMohaTitle = document.getElementById('mindMohaTitle');
+    if(mindMohaTitle) mindMohaTitle.innerText = dict.mindMohaTitle;
+
+    // Mind Buttons
+    const lobhaBtn = document.getElementById('mind-lobha');
+    if(lobhaBtn) lobhaBtn.innerText = dict.mindLobha;
+    const alobhaBtn = document.getElementById('mind-alobha');
+    if(alobhaBtn) alobhaBtn.innerText = dict.mindAlobha;
+    const dosaBtn = document.getElementById('mind-dosa');
+    if(dosaBtn) dosaBtn.innerText = dict.mindDosa;
+    const adosaBtn = document.getElementById('mind-adosa');
+    if(adosaBtn) adosaBtn.innerText = dict.mindAdosa;
+    const mohaBtn = document.getElementById('mind-moha');
+    if(mohaBtn) mohaBtn.innerText = dict.mindMoha;
+    const amohaBtn = document.getElementById('mind-amoha');
+    if(amohaBtn) amohaBtn.innerText = dict.mindAmoha;
+
+    // Mind Input Placeholders
+    const mindInput1 = document.getElementById('mindInput1');
+    if(mindInput1) mindInput1.setAttribute('data-placeholder', dict.mindInput1Placeholder);
+    const mindInput2 = document.getElementById('mindInput2');
+    if(mindInput2) mindInput2.setAttribute('data-placeholder', dict.mindInput2Placeholder);
+
+    // Mind Footer Link
+    const mindFooterLink = document.getElementById('mindFooterLink');
+    if(mindFooterLink) mindFooterLink.innerText = dict.mindFooterLink;
+
+    // ===== Update Guide Page =====
+    updateGuidePageLanguage(dict);
+
+    // ===== Update Body Guide Page =====
+    updateBodyGuidePageLanguage(dict);
+
+    // ===== Update Mind Guide Page =====
+    updateMindGuidePageLanguage(dict);
+
+    // ===== Update Dhamma Guide Page =====
+    updateDhammaGuidePageLanguage(dict);
+
+    // Adjust button font size based on language
+    updateButtonFontSize();
+}
+
+/**
+ * Update guide page text for current language
+ */
+function updateGuidePageLanguage(dict) {
+    // Helper: update text node only (preserving child SVG elements in h2 titles)
+    function setTitleText(id, text) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        // Find the last text node (after the SVG span)
+        const nodes = el.childNodes;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].nodeType === Node.TEXT_NODE && nodes[i].textContent.trim()) {
+                nodes[i].textContent = '\n                                ' + text + '\n                            ';
+                return;
+            }
+        }
+    }
+
+    // Helper: set innerHTML for elements containing HTML tags
+    function setHTML(id, html) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+
+    // Helper: set text content
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    // Back button
+    setText('guideBackText', dict.guideBackText);
+
+    // Hero
+    setText('guideMainTitle', dict.guideMainTitle);
+    setText('guideMainSubtitle', dict.guideMainSubtitle);
+
+    // Overview
+    setText('guideOverviewBadge', dict.guideOverviewBadge);
+    setHTML('guideOverviewText', dict.guideOverviewText);
+    setHTML('guideOverviewNote', dict.guideOverviewNote);
+
+    // Physical Vedana section
+    setTitleText('guideBodyTitle', dict.guideBodyTitleText);
+    setHTML('guideBodyDesc', dict.guideBodyDesc);
+    setText('guideBodySukh', dict.guideBodySukh);
+    setText('guideBodySukhSub', dict.guideBodySukhSub);
+    setText('guideBodyDukkh', dict.guideBodyDukkh);
+    setText('guideBodyDukkhSub', dict.guideBodyDukkhSub);
+
+    // Mental Vedana section
+    setTitleText('guideMindTitle', dict.guideMindTitleText);
+    setHTML('guideMindDesc', dict.guideMindDesc);
+    setText('guideMindSukh', dict.guideMindSukh);
+    setText('guideMindSukhSub', dict.guideMindSukhSub);
+    setText('guideMindDukkh', dict.guideMindDukkh);
+    setText('guideMindDukkhSub', dict.guideMindDukkhSub);
+    setText('guideMindNeutral', dict.guideMindNeutral);
+    setText('guideMindNeutralSub', dict.guideMindNeutralSub);
+
+    // Practice section
+    setTitleText('guidePracticeTitle', dict.guidePracticeTitleText);
+    setText('guidePracticeBody', dict.guidePracticeBody);
+    setText('guidePracticeMind', dict.guidePracticeMind);
+    setText('guidePracticeInsight', dict.guidePracticeInsight);
+
+    // Observe section
+    setTitleText('guideObserveTitle', dict.guideObserveTitleText);
+    setText('guideObserveText', dict.guideObserveText);
+    setText('guideObserveSukh', dict.guideObserveSukh);
+    setText('guideObserveDukkh', dict.guideObserveDukkh);
+    setText('guideObserveNeutral', dict.guideObserveNeutral);
+    setText('guideObserveConclusion', dict.guideObserveConclusion);
+
+    // Senses section
+    setText('guideSensesBadge', dict.guideSensesBadge);
+    setHTML('guideSenseEye', dict.guideSenseEye);
+    setText('guideSenseEyeVedana', dict.guideSenseEyeVedana);
+    setHTML('guideSenseEar', dict.guideSenseEar);
+    setText('guideSenseEarVedana', dict.guideSenseEarVedana);
+    setHTML('guideSenseThink', dict.guideSenseThink);
+    setText('guideSenseThinkVedana', dict.guideSenseThinkVedana);
+
+    // Vedana 5 section
+    setText('guideVedana5Desc', dict.guideVedana5Desc);
+    setText('guideV5BodyLabel', dict.guideV5BodyLabel);
+    setText('guideV5MindLabel', dict.guideV5MindLabel);
+    setText('guideV5SepText', dict.guideV5SepText);
+    setHTML('guideVedana5Conclusion', dict.guideVedana5Conclusion);
+
+    // Liberation section
+    setText('guideLiberationText', dict.guideLiberationText);
+}
+
+/**
+ * Update body guide page text for current language
+ */
+function updateBodyGuidePageLanguage(dict) {
+    // Helper: update text node only (preserving child SVG elements in h2 titles)
+    function setTitleText(id, text) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const nodes = el.childNodes;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].nodeType === Node.TEXT_NODE && nodes[i].textContent.trim()) {
+                nodes[i].textContent = '\n                                ' + text + '\n                            ';
+                return;
+            }
+        }
+    }
+
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    // Back button
+    setText('bodyGuideBackText', dict.bodyGuideBackText);
+
+    // Hero
+    setText('bodyGuideMainTitle', dict.bodyGuideMainTitle);
+    setText('bodyGuideMainSubtitle', dict.bodyGuideMainSubtitle);
+
+    // Overview
+    setText('bodyGuideOverviewBadge', dict.bodyGuideOverviewBadge);
+    setText('bodyGuideOverviewText', dict.bodyGuideOverviewText);
+
+    // Posture sections
+    setTitleText('bodyGuideWalkTitle', dict.bodyGuideWalkTitleText);
+    setText('bodyGuideWalkDesc', dict.bodyGuideWalkDesc);
+
+    setTitleText('bodyGuideStandTitle', dict.bodyGuideStandTitleText);
+    setText('bodyGuideStandDesc', dict.bodyGuideStandDesc);
+
+    setTitleText('bodyGuideSitTitle', dict.bodyGuideSitTitleText);
+    setText('bodyGuideSitDesc', dict.bodyGuideSitDesc);
+
+    setTitleText('bodyGuideLieTitle', dict.bodyGuideLieTitleText);
+    setText('bodyGuideLieDesc', dict.bodyGuideLieDesc);
+
+    // Other postures
+    setTitleText('bodyGuideOtherTitle', dict.bodyGuideOtherTitleText);
+    setText('bodyGuideOtherDesc', dict.bodyGuideOtherDesc);
+
+    // Final insight
+    setText('bodyGuideFinalText', dict.bodyGuideFinalText);
+}
+
+/**
+ * Update mind guide page text for current language
+ */
+function updateMindGuidePageLanguage(dict) {
+    // Helper: update text node only (preserving child SVG elements in h2 titles)
+    function setTitleText(id, text) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const nodes = el.childNodes;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].nodeType === Node.TEXT_NODE && nodes[i].textContent.trim()) {
+                nodes[i].textContent = '\n                                ' + text + '\n                            ';
+                return;
+            }
+        }
+    }
+
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    // Back button
+    setText('mindGuideBackText', dict.mindGuideBackText);
+
+    // Hero
+    setText('mindGuideMainTitle', dict.mindGuideMainTitle);
+    setText('mindGuideMainSubtitle', dict.mindGuideMainSubtitle);
+
+    // Overview
+    setText('mindGuideOverviewBadge', dict.mindGuideOverviewBadge);
+    setText('mindGuideOverviewText', dict.mindGuideOverviewText);
+
+    // Impermanence section
+    setTitleText('mindGuideImpermanenceTitle', dict.mindGuideImpermanenceTitleText);
+    setText('mindGuideImpermanenceDesc', dict.mindGuideImpermanenceDesc);
+
+    // Practice section
+    setTitleText('mindGuidePracticeTitle', dict.mindGuidePracticeTitleText);
+    setText('mindGuidePracticeDesc', dict.mindGuidePracticeDesc);
+
+    // Final insight
+    setText('mindGuideFinalText', dict.mindGuideFinalText);
+}
+
+/**
+ * Update Dhamma guide page text for current language
+ */
+function updateDhammaGuidePageLanguage(dict) {
+    function setTitleText(id, text) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const nodes = el.childNodes;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            if (nodes[i].nodeType === Node.TEXT_NODE && nodes[i].textContent.trim()) {
+                nodes[i].textContent = '\n                                ' + text + '\n                            ';
+                return;
+            }
+        }
+    }
+
+    function setText(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
+    function setHTML(id, html) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+
+    // Back button
+    setText('dhammaGuideBackText', dict.dhammaGuideBackText);
+
+    // Hero
+    setText('dhammaGuideMainTitle', dict.dhammaGuideMainTitle);
+    setText('dhammaGuideMainSubtitle', dict.dhammaGuideMainSubtitle);
+
+    // Overview
+    setText('dhammaGuideOverviewBadge', dict.dhammaGuideOverviewBadge);
+    setText('dhammaGuideOverviewText', dict.dhammaGuideOverviewText);
+
+    // Vipassana section
+    setTitleText('dhammaGuideVipassanaTitle', dict.dhammaGuideVipassanaTitle);
+    setText('dhammaGuideVipassanaText', dict.dhammaGuideVipassanaText);
+
+    // Practice section
+    setTitleText('dhammaGuidePracticeTitle', dict.dhammaGuidePracticeTitle);
+    setText('dhammaGuideMeaningIntro', dict.dhammaGuideMeaningIntro);
+    setHTML('dhammaGuideImpText', dict.dhammaGuideImpText);
+    setHTML('dhammaGuideFadeText', dict.dhammaGuideFadeText);
+    setHTML('dhammaGuideCessText', dict.dhammaGuideCessText);
+    setHTML('dhammaGuideRelText', dict.dhammaGuideRelText);
+    setText('dhammaGuideConclusion', dict.dhammaGuideConclusion);
+
+    // Final insight
+    setText('dhammaGuideFinalText', dict.dhammaGuideFinalText);
+}
+
+const langBtn = document.getElementById('langSwitchBtn');
+if (langBtn) {
+    langBtn.addEventListener('click', () => {
+        currentLang = currentLang === 'th' ? 'en' : 'th';
+        updateLanguageUI();
+    });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+    updateLanguageUI();
+});
+
+function updateButtonFontSize() {
+    const buttons = document.querySelectorAll('.circle-btn');
+    const isMobile = window.innerWidth <= 480;
+    if (currentLang === 'th') {
+        buttons.forEach(btn => btn.style.fontSize = isMobile ? '1.5rem' : '1.8rem');
+    } else {
+        buttons.forEach(btn => btn.style.fontSize = '');
+    }
+}
+
+// Set initial Thai font size on load
+document.addEventListener('DOMContentLoaded', () => {
+    updateButtonFontSize();
+});
+
+// ===== BODY PAGE LOGIC =====
+
+// Body posture counters
+const bodyCounts = {
+    'body-walk': 0,
+    'body-stand': 0,
+    'body-sit': 0,
+    'body-lie': 0
+};
+
+/**
+ * Record a body posture click
+ */
+function recordBodyPosture(posture, id) {
+    bodyCounts[id]++;
+
+    const counterEl = document.getElementById(`count-${id}`);
+    counterEl.innerText = bodyCounts[id];
+
+    // Animate counter pop
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('pop');
+
+    // Add pop animation to button
+    const btn = document.getElementById(id);
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+}
+
+/**
+ * Reset all body posture counters
+ */
+function resetBodyPostures() {
+    Object.keys(bodyCounts).forEach(key => {
+        bodyCounts[key] = 0;
+        document.getElementById(`count-${key}`).innerText = '0';
+    });
+}
+
+// Body breath (Anapanasati) counters
+const bodyBreathCounts = {
+    'body-breath-out': 0,
+    'body-breath-in': 0,
+    'body-breath-out-long': 0,
+    'body-breath-in-long': 0,
+    'body-breath-out-short': 0,
+    'body-breath-in-short': 0,
+    'body-breath-whole-out': 0,
+    'body-breath-whole-in': 0,
+    'body-breath-fade-out': 0,
+    'body-breath-fade-in': 0
+};
+
+/**
+ * Switch Body Tabs
+ */
+function switchBodyTab(tabName) {
+    const tabPosture = document.getElementById('tabBodyPosture');
+    const tabBreath = document.getElementById('tabBodyBreath');
+    const contentPosture = document.getElementById('body-tab-posture');
+    const contentBreath = document.getElementById('body-tab-breath');
+
+    if (!tabPosture || !tabBreath || !contentPosture || !contentBreath) return;
+
+    if (tabName === 'posture') {
+        tabPosture.classList.add('active');
+        tabBreath.classList.remove('active');
+        contentPosture.style.display = 'block';
+        contentPosture.classList.add('active');
+        contentBreath.style.display = 'none';
+        contentBreath.classList.remove('active');
+    } else if (tabName === 'breath') {
+        tabBreath.classList.add('active');
+        tabPosture.classList.remove('active');
+        contentBreath.style.display = 'block';
+        contentBreath.classList.add('active');
+        contentPosture.style.display = 'none';
+        contentPosture.classList.remove('active');
+    }
+}
+
+/**
+ * Record a body breath click
+ */
+function recordBodyBreath(id) {
+    if (bodyBreathCounts[id] !== undefined) {
+        bodyBreathCounts[id]++;
+        
+        const counterEl = document.getElementById(`count-${id}`);
+        if (counterEl) {
+            counterEl.innerText = bodyBreathCounts[id];
+            
+            // Animate counter pop
+            counterEl.classList.remove('pop');
+            void counterEl.offsetWidth;
+            counterEl.classList.add('pop');
+        }
+
+        // Add pop animation to button
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.classList.remove('pop');
+            void btn.offsetWidth;
+            btn.classList.add('pop');
+        }
+    }
+}
+
+/**
+ * Reset body breath counters
+ */
+function resetBodyBreathGroup() {
+    Object.keys(bodyBreathCounts).forEach(key => {
+        bodyBreathCounts[key] = 0;
+        const el = document.getElementById(`count-${key}`);
+        if (el) el.innerText = '0';
+    });
+}
+
+// ===== MIND PAGE LOGIC =====
+
+// Mind state counters
+const mindCounts = {
+    'mind-lobha': 0,
+    'mind-alobha': 0,
+    'mind-dosa': 0,
+    'mind-adosa': 0,
+    'mind-moha': 0,
+    'mind-amoha': 0
+};
+
+/**
+ * Record a mind state click
+ */
+function recordMindState(stateType, id) {
+    mindCounts[id]++;
+
+    const counterEl = document.getElementById(`count-${id}`);
+    counterEl.innerText = mindCounts[id];
+
+    // Animate counter pop
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('pop');
+
+    // Add pop animation to button
+    const btn = document.getElementById(id);
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+}
+
+/**
+ * Reset mind state group
+ * @param {string} group - 'lobha', 'dosa', or 'moha'
+ */
+function resetMindGroup(group) {
+    const pairs = {
+        'lobha': ['mind-lobha', 'mind-alobha'],
+        'dosa': ['mind-dosa', 'mind-adosa'],
+        'moha': ['mind-moha', 'mind-amoha']
+    };
+
+    const keys = pairs[group];
+    if (keys) {
+        keys.forEach(key => {
+            mindCounts[key] = 0;
+            document.getElementById(`count-${key}`).innerText = '0';
+        });
+    }
+}
+
+/**
+ * Clear mind input field
+ */
+function clearMindInput(inputId) {
+    const field = document.getElementById(inputId);
+    if (field) {
+        field.innerHTML = '';
+        field.focus();
+    }
+    // Hide clear button
+    const clearBtn = document.getElementById(inputId.replace('mindInput', 'mindClear'));
+    if (clearBtn) clearBtn.style.display = 'none';
+}
+
+// Mind input counters
+const mindInputCounts = {
+    'mindInput1': 0,
+    'mindInput2': 0
+};
+
+/**
+ * Record mind input as a button press (click to count)
+ */
+function recordMindInput(inputId, btnId) {
+    const field = document.getElementById(inputId);
+    // Only count if the click is not inside the editable field (to allow typing)
+    // The onclick on the wrapper handles this; clicks on the field itself propagate
+    
+    mindInputCounts[inputId]++;
+
+    const counterEl = document.getElementById(`count-${inputId}`);
+    counterEl.innerText = mindInputCounts[inputId];
+
+    // Animate counter pop
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('pop');
+
+    // Add pop animation to button
+    const btn = document.getElementById(btnId);
+    if (!btn.classList.contains('disabled-input')) {
+        btn.classList.remove('pop');
+        void btn.offsetWidth;
+        btn.classList.add('pop');
+    }
+}
+
+/**
+ * Confirm mind inputs and disable them
+ */
+function confirmMindInputs() {
+    ['mindInput1', 'mindInput2'].forEach(id => {
+        const field = document.getElementById(id);
+        const clearBtn = document.getElementById(id.replace('mindInput', 'mindClear'));
+        const wrapperBtn = document.getElementById(id.replace('mindInput', 'mindInputBtn'));
+        
+        if (field) {
+            field.setAttribute('contenteditable', 'false');
+        }
+        if (clearBtn) {
+            clearBtn.style.display = 'none';
+        }
+        if (wrapperBtn) {
+            wrapperBtn.classList.add('disabled-input');
+        }
+    });
+
+    const confirmBtn = document.getElementById('mindConfirmBtn');
+    if (confirmBtn) {
+        confirmBtn.style.display = 'none'; // Hide confirm button after clicking
+    }
+}
+
+/**
+ * Reset mind input counters and enable input
+ */
+function resetMindInputs() {
+    ['mindInput1', 'mindInput2'].forEach(id => {
+        mindInputCounts[id] = 0;
+        document.getElementById(`count-${id}`).innerText = '0';
+        
+        const field = document.getElementById(id);
+        const wrapperBtn = document.getElementById(id.replace('mindInput', 'mindInputBtn'));
+        
+        if (field) {
+            field.innerHTML = '';
+            field.setAttribute('contenteditable', 'true');
+        }
+        if (wrapperBtn) {
+            wrapperBtn.classList.remove('disabled-input');
+        }
+    });
+    
+    // Always show confirm button when reset
+    const confirmBtn = document.getElementById('mindConfirmBtn');
+    if (confirmBtn) {
+        confirmBtn.style.display = 'inline-block';
+    }
+}
+
+// Mind text input - show/hide clear button based on content
+document.addEventListener('DOMContentLoaded', () => {
+    const mindInputs = [
+        { field: 'mindInput1', clear: 'mindClear1', btn: 'mindInputBtn1' },
+        { field: 'mindInput2', clear: 'mindClear2', btn: 'mindInputBtn2' }
+    ];
+
+    mindInputs.forEach(({ field, clear, btn }) => {
+        const fieldEl = document.getElementById(field);
+        const clearEl = document.getElementById(clear);
+        const btnEl = document.getElementById(btn);
+
+        if (fieldEl && clearEl) {
+            // Show/hide clear button
+            fieldEl.addEventListener('input', () => {
+                clearEl.style.display = fieldEl.innerText.trim().length > 0 && fieldEl.getAttribute('contenteditable') === 'true' ? 'flex' : 'none';
+            });
+
+            // Stop click propagation when typing inside the field
+            fieldEl.addEventListener('click', (e) => {
+                if(fieldEl.getAttribute('contenteditable') === 'true') {
+                    e.stopPropagation();
+                }
+            });
+        }
+
+        // Lit effect for input buttons (only if not disabled)
+        if (btnEl) {
+            let litTimeout = null;
+
+            btnEl.addEventListener('click', () => {
+                if (btnEl.classList.contains('disabled-input')) return;
+                
+                if (litTimeout) {
+                    clearTimeout(litTimeout);
+                    litTimeout = null;
+                }
+                btnEl.classList.add('lit');
+                litTimeout = setTimeout(() => {
+                    btnEl.classList.remove('lit');
+                    litTimeout = null;
+                }, 1000);
+            });
+        }
+    });
+
+    // Mind button lit effects are now handled by the unified handler above
+    // (all .mind-btn elements also have .circle-btn class).
+});
+// ===== DHAMMA PAGE LOGIC =====
+
+/**
+ * Record a dhamma practice click
+ */
+function recordDhamma(id) {
+    if (dhammaCounts[id] !== undefined) {
+        dhammaCounts[id]++;
+        
+        const counterEl = document.getElementById(`count-${id}`);
+        if (counterEl) {
+            counterEl.innerText = dhammaCounts[id];
+            
+            // Animate counter pop
+            counterEl.classList.remove('pop');
+            void counterEl.offsetWidth;
+            counterEl.classList.add('pop');
+        }
+
+        // Add pop animation to button
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.classList.remove('pop');
+            void btn.offsetWidth;
+            btn.classList.add('pop');
+        }
+    }
+}
+
+/**
+ * Reset all dhamma counters
+ */
+function resetDhammaGroup() {
+    Object.keys(dhammaCounts).forEach(key => {
+        dhammaCounts[key] = 0;
+        const el = document.getElementById(`count-${key}`);
+        if (el) el.innerText = '0';
+    });
+}
+
+// Rainbow button (Dhamma) lit effects are now handled by the unified handler above
+// (all .btn-rainbow elements also have .circle-btn class).
