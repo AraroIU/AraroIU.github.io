@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://araroiu.github.io/sitemap.xml
